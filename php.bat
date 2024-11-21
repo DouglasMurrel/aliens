@@ -1,0 +1,1 @@
+M:/OpenServer/Distr/5.4.3/modules/php/PHP_8.1/php %1 %2 %3 %4 %5 %6 %7 %8 %9
