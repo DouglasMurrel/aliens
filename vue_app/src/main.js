@@ -1,4 +1,7 @@
-import SignUpForm from './components/SignUpForm.vue'
 import { createApp } from 'vue'
+import router from './router/router'
+import App from './App.vue'
 
-createApp(SignUpForm).mount('#vue-app')
+createApp(App)
+        .use(router)
+        .mount('#vue-app')
