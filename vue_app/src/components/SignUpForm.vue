@@ -42,6 +42,7 @@
 
 <script>
     import axios from 'axios';
+    import {API_URL} from '../config.local'
 
     export default {
         name: 'SignUpForm',
@@ -70,7 +71,7 @@
                     password: this.password,
                 };
 
-                axios.create().post('/sign-up-handler', body).then(function (response) {
+                axios.create().post(API_URL + '/sign-up-handler', body).then(function (response) {
                     if(response.data.status === 400){
                       component.validationErrors = response.data.errors;
                     }
