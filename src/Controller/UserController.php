@@ -47,7 +47,7 @@ class UserController extends AbstractController
      * @return JsonResponse
      * @throws \Exception
      */
-    #[Route('/sign-up-handler', name: 'sign-up-handler', methods: ['POST'])]
+    #[Route('/api/sign-up-handler', name: 'sign-up-handler', methods: ['POST'])]
     public function signUpHandler(Request $request): JsonResponse
     {
         $signUpRequest = $this->decodeRequest($request);

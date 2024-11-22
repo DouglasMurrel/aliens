@@ -26,9 +26,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string', length: 255)]
     private $fullname;
 
-    #[ORM\Column(type: 'string', length: 255, unique: true)]
-    private $username;
-
     public function getId(): ?int
     {
         return $this->id;
@@ -66,18 +63,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setFullname(string $fullname): self
     {
         $this->fullname = $fullname;
-
-        return $this;
-    }
-
-    public function getUsername(): ?string
-    {
-        return $this->username;
-    }
-
-    public function setUsername(string $username): self
-    {
-        $this->username = $username;
 
         return $this;
     }

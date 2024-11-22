@@ -71,7 +71,7 @@
                     password: this.password,
                 };
 
-                axios.create().post(API_URL + '/sign-up-handler', body).then(function (response) {
+                axios.create().post(API_URL + '/api/sign-up-handler', body).then(function (response) {
                     if(response.data.status === 400){
                       component.validationErrors = response.data.errors;
                     }
