@@ -3,7 +3,8 @@
     <h1>Sign In Form</h1>
 
     <div class="alert alert-success" role="alert" v-if="formSubmittedSuccess && userLoaded">
-      Congratulations! You successfully signed in as {{ userEmail }}
+      <div>Congratulations! You successfully signed in as {{ userEmail }}</div>
+      <a href='' @click.prevent="logout">Logout</a>
     </div>
 
     <form method="post" v-on:submit.prevent="submitForm" v-else-if="userLoaded">
@@ -65,6 +66,7 @@
                     else{
                       component.formSubmittedSuccess = true;
                       component.validationErrors = {};
+                      component.userEmail = response.data.user;
                       const token = response.data.token;
                       localStorage.setItem('authToken', token);
                     }
@@ -73,6 +75,18 @@
                     alert(message);
                     console.log(message);
                     console.log(error.response);
+                });
+            },
+            logout: function(event){
+                localStorage.removeItem('authToken');
+                this.formSubmittedSuccess = false;
+                axios.create().post(API_URL + '/logout',{}).then(function (response) {
+                    if(response.status === 200) {
+                        component.formSubmittedSuccess = false;
+                        component.userEmail = '';
+                    }
+                }).catch(function (error) {
+                    console.log(error);
                 });
             }
         },
@@ -85,15 +99,15 @@
                     }
                 }
                 axios.create().post(API_URL + '/userinfo',{},axiosConfig).then(function (response) {
-                    if(response.status === 401){
-                      //ToDo: реализовать переподключение или логаут
-                    }
-                    else{
+                    if(response.status === 200) {
                         component.formSubmittedSuccess = true;
                         component.userEmail = response.data.user;
                     }
                     component.userLoaded = true;
                 }).catch(function (error) {
+                    if (error.response.data.code === 401 && error.response.data.message === 'Expired JWT Token') {
+                        console.log('Token expired')
+                    }
                     console.log(error);
                     component.userLoaded = true;
                 });

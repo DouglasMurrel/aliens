@@ -24,6 +24,9 @@ security:
             provider: app_user
             stateless: true
             jwt: ~
+            logout:
+                path: /logout
+                target: empty
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall

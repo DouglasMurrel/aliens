@@ -49,6 +49,12 @@ class UserController extends AbstractController
         $this->logger = $logger;
         $this->jwtManager = $jwtManager;
     }
+    
+    #[Route('/', name: 'empty')]
+    public function empty(): Response
+    {
+        return new Response();
+    }
 
     /**
      * @return JsonResponse
@@ -57,18 +63,16 @@ class UserController extends AbstractController
     #[Route('/sign-up-handler', name: 'sign-up-handler', methods: ['POST'])]
     public function signUpHandler(Request $request): JsonResponse
     {
-        $signUpRequest = $this->decodeRequest($request);
+        $signUpRequest = $this->decodeSignUpRequest($request);
         if(!$this->signUpValidator->validate($signUpRequest)){
-            return new JsonResponse([
-                'status' => Response::HTTP_BAD_REQUEST,
+            return $this->json([
                 'errors' => $this->signUpValidator->getErrors()
-            ]);
+            ], Response::HTTP_UNAUTHORIZED);
         }
 
         $user = $this->userCreator->createUser($signUpRequest);
 
-        return new JsonResponse([
-            'status' => Response::HTTP_OK,
+        return $this->json([
             'entity' => $user->getId()
         ]);
     }
@@ -104,20 +108,14 @@ class UserController extends AbstractController
         ]);
     }
     
-    private function decodeRequest(Request $request): SignUpRequest
+    private function decodeSignUpRequest(Request $request): SignUpRequest
     {
         $encoders = [new JsonEncoder()];
         $normalizers = [new ObjectNormalizer()];
         $serializer = new Serializer($normalizers, $encoders);
         
-//        $data = json_decode($request->getContent(), true);
         $data = $request->getContent();
 
-//        if (json_last_error() !== JSON_ERROR_NONE) {
-            //throw new HttpException(400, 'invalid_json');
-//            return false;
-//        }
-        
         $signUpRequest = $serializer->deserialize($data, SignUpRequest::class, 'json');
         return $signUpRequest;
     }
