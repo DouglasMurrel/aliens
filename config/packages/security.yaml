@@ -13,12 +13,18 @@ security:
             security: false
         login:
             pattern: ^/login
+            provider: app_user
             stateless: true
             json_login:
                 username_path: email
                 check_path: /login
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
+        token_refresh:
+            pattern: ^/token_refresh
+            stateless: true
+            refresh_jwt:
+                check_path: /token_refresh
         main:
             lazy: true
             provider: app_user

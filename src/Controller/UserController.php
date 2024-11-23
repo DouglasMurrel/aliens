@@ -92,14 +92,15 @@ class UserController extends AbstractController
             'user'  => $user->getUserIdentifier(),
             'token' => $token,
         ]);
+        return new JsonResponse();
     }
     
-    #[Route('/userinfo', name: 'userinfo', methods: ['POST'])]
+    #[Route('/userinfo', name: 'userinfo', methods: ['GET','POST'])]
     public function userInfo(#[CurrentUser] ?User $user): JsonResponse
     {
         if (null === $user) {
             return $this->json([
-                'message' => 'missing credentials',
+                'message' => 'missing credentials for userinfo',
             ], Response::HTTP_UNAUTHORIZED);
         }
 

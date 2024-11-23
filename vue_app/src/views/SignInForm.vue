@@ -46,6 +46,7 @@
                 formSubmittedSuccess: false,
                 userLoaded: false,
                 authToken: localStorage.getItem('authToken'),
+                refreshToken: localStorage.getItem('refreshToken'),
                 userEmail: ''
             }
         },
@@ -69,16 +70,18 @@
                       component.userEmail = response.data.user;
                       const token = response.data.token;
                       localStorage.setItem('authToken', token);
+                      const refresh_token = response.data.refresh_token;
+                      localStorage.setItem('refreshToken', refresh_token);
                     }
                 }).catch(function (error) {
                     let message = 'Internal server error';
-                    alert(message);
                     console.log(message);
                     console.log(error.response);
                 });
             },
             logout: function(event){
                 localStorage.removeItem('authToken');
+                localStorage.removeItem('refreshToken');
                 this.formSubmittedSuccess = false;
                 axios.create().post(API_URL + '/logout',{}).then(function (response) {
                     if(response.status === 200) {
@@ -102,14 +105,31 @@
                     if(response.status === 200) {
                         component.formSubmittedSuccess = true;
                         component.userEmail = response.data.user;
+                        component.userLoaded = true;
                     }
-                    component.userLoaded = true;
                 }).catch(function (error) {
                     if (error.response.data.code === 401 && error.response.data.message === 'Expired JWT Token') {
-                        console.log('Token expired')
+                        component.userLoaded = false;
+                        component.formSubmittedSuccess = false;
+                        axios.create().post(API_URL + '/token_refresh', {'refresh_token':component.refreshToken}).then(function (response) {
+                            if(response.status === 200){
+                                component.validationErrors = {};
+                                component.userEmail = response.data.user;
+                                const token = response.data.token;
+                                localStorage.setItem('authToken', token);
+                                const refresh_token = response.data.refresh_token;
+                                localStorage.setItem('refreshToken', refresh_token);
+                                component.userLoaded = true;
+                                component.formSubmittedSuccess = true;
+                            }   
+                        }).catch(function (error) {
+                            component.userLoaded = true;
+                            let message = 'Internal server error';
+                            console.log(message);
+                            console.log(error.response);
+                        });
                     }
                     console.log(error);
-                    component.userLoaded = true;
                 });
             } else {
                 this.userLoaded = true;
