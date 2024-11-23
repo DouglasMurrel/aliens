@@ -36,8 +36,8 @@ class UserCreator
         $user
             ->setEmail($signUpRequest->getEmail())
             ->setFullname($signUpRequest->getFullname())
-            //->setPassword($this->passwordEncoder->encodePassword($user, $signUpRequest->getPassword()))
-            ->setUsername($signUpRequest->getUsername());
+            ->addRole(User::ROLE_DEFAULT)
+        ;
 
         $encodedPassword = $this->passwordEncoder->hashPassword($user, $signUpRequest->getPassword());
         $user->setPassword($encodedPassword);

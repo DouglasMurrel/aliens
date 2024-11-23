@@ -12,6 +12,9 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 #[Table(name: 'user')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
+    const ROLE_DEFAULT = 'ROLE_USER';
+    const ROLE_SUPER_ADMIN = 'ROLE_SUPER_ADMIN';
+    
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
@@ -25,6 +28,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: 'string', length: 255)]
     private $fullname;
+    
+    #[ORM\Column(type: 'string', length: 255)]
+    private $salt;
+    
+    #[ORM\Column(type: 'array')]
+    private $roles;
 
     public function getId(): ?int
     {
@@ -69,17 +78,62 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getRoles(): array
     {
-        return [];
-    }
+        $roles = $this->roles;
 
+        // we need to make sure to have at least one role
+        $roles[] = static::ROLE_DEFAULT;
+
+        return array_values(array_unique($roles));
+    }
+    
+    public function hasRole($role)
+    {
+        return in_array(strtoupper($role), $this->getRoles(), true);
+    }
+    
+    public function addRole($role)
+    {
+        $role = strtoupper($role);
+        if ($role === static::ROLE_DEFAULT) {
+            return $this;
+        }
+
+        if (!in_array($role, $this->roles, true)) {
+            $this->roles[] = $role;
+        }
+
+        return $this;
+    }
+    
+    public function removeRole($role)
+    {
+        if (false !== $key = array_search(strtoupper($role), $this->roles, true)) {
+            unset($this->roles[$key]);
+            $this->roles = array_values($this->roles);
+        }
+
+        return $this;
+    }
+    
+    public function isSuperAdmin()
+    {
+        return $this->hasRole(static::ROLE_SUPER_ADMIN);
+    }
+    
     public function getSalt()
     {
-        return null;
+        return $this->salt;
+    }
+    
+    public function setSalt($salt)
+    {
+        $this->salt = $salt;
+        return $this;
     }
 
     public function eraseCredentials()
     {
-
+        $this->password = null;
     }
     
     public function getUserIdentifier(): string

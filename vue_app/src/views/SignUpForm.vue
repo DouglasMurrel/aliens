@@ -15,13 +15,6 @@
         </small>
       </div>
       <div class="form-group">
-        <label for="username">Username</label>
-        <input type="text" class="form-control" id="username" v-model="username" aria-describedby="emailHelp" placeholder="Enter username">
-        <small class="form-text text-danger" v-if="validationErrors.username">
-          {{ validationErrors.username }}
-        </small>
-      </div>
-      <div class="form-group">
         <label for="email">Email address</label>
         <input type="email" class="form-control" id="email" v-model="email" aria-describedby="emailHelp" placeholder="Enter email">
         <small class="form-text text-danger" v-if="validationErrors.email">
@@ -30,7 +23,7 @@
       </div>
       <div class="form-group">
         <label for="password">Password</label>
-        <input type="password" class="form-control" id="password" v-model="password" placeholder="Password">
+        <input type="password" class="form-control" autocomplete="off" id="password" v-model="password" placeholder="Password">
         <small class="form-text text-danger" v-if="validationErrors.password">
           {{ validationErrors.password }}
         </small>
@@ -71,7 +64,7 @@
                     password: this.password,
                 };
 
-                axios.create().post(API_URL + '/api/sign-up-handler', body).then(function (response) {
+                axios.create().post(API_URL + '/sign-up-handler', body).then(function (response) {
                     if(response.data.status === 400){
                       component.validationErrors = response.data.errors;
                     }

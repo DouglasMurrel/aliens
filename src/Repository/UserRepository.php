@@ -55,7 +55,7 @@ class UserRepository extends ServiceEntityRepository implements UserLoaderInterf
             ->andWhere('u.email = :val')
             ->setParameter('val', $email)
             ->getQuery()
-            ->getResult()
+            ->getOneOrNullResult()
         ;        
     }
 }

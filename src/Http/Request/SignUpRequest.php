@@ -21,14 +21,6 @@ class SignUpRequest
      */
     #[Assert\Type('string')]
     #[Assert\NotBlank]
-    private $username;
-
-    /**
-     * @var string
-     * @Serializer\Type("string")
-     */
-    #[Assert\Type('string')]
-    #[Assert\NotBlank]
     #[Assert\Email]
     private $email;
 
@@ -56,11 +48,6 @@ class SignUpRequest
         return $this->fullname;
     }
 
-    public function getUsername(): string
-    {
-        return $this->username;
-    }
-
     public function getEmail(): string
     {
         return $this->email;
@@ -73,11 +60,6 @@ class SignUpRequest
     
     public function setFullname($fullname): self {
         $this->fullname = $fullname;
-        return $this;
-    }
-
-    public function setUsername($username): self {
-        $this->username = $username;
         return $this;
     }
 
