@@ -48,8 +48,12 @@
                 userLoaded: false,
                 authToken: localStorage.getItem('authToken'),
                 refreshToken: localStorage.getItem('refreshToken'),
-                userEmail: '',
-                userData: {}
+                userEmail: ''
+            }
+        },
+        computed: {
+            userData () {
+                return this.$store.state.userData
             }
         },
         methods: {
@@ -70,7 +74,7 @@
                       component.formSubmittedSuccess = true;
                       component.validationErrors = {};
                       component.userEmail = response.data.user;
-                      component.userData = JSON.parse(response.data.userData);
+                      component.$store.commit('set',JSON.parse(response.data.userData));
                       const token = response.data.token;
                       localStorage.setItem('authToken', token);
                       const refresh_token = response.data.refresh_token;
@@ -91,7 +95,7 @@
                     if(response.status === 200) {
                         component.formSubmittedSuccess = false;
                         component.userEmail = '';
-                        component.userData = {};
+                        component.$store.commit('set',{});
                     }
                 }).catch(function (error) {
                     console.log(error);
@@ -110,8 +114,9 @@
                     if(response.status === 200) {
                         component.formSubmittedSuccess = true;
                         component.userEmail = response.data.user;
-                        component.userData = JSON.parse(response.data.userData);
+                        component.$store.commit('set',JSON.parse(response.data.userData));
                         component.userLoaded = true;
+                        console.log(component.$store);
                     }
                 }).catch(function (error) {
                     if (error.response.data.code === 401 && error.response.data.message === 'Expired JWT Token') {
@@ -121,7 +126,7 @@
                             if(response.status === 200){
                                 component.validationErrors = {};
                                 component.userEmail = response.data.user;
-                                component.userData = JSON.parse(response.data.userData);
+                                component.$store.commit('set',JSON.parse(response.data.userData));
                                 const token = response.data.token;
                                 localStorage.setItem('authToken', token);
                                 const refresh_token = response.data.refresh_token;
