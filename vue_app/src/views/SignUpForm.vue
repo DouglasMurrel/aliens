@@ -3,10 +3,11 @@
     <h1>Sign Up Form</h1>
 
     <div class="alert alert-success" role="alert" v-if="formSubmittedSuccess">
-      Congratulations! You account registered successfully
+      Congratulations! You account registered successfully. You can log in now
     </div>
 
     <form method="post" v-on:submit.prevent="submitForm" v-else>
+      <h2 v-if="ajaxWaiting">Loading, please wait...</h2>
       <div class="form-group">
         <label for="fullname">Fullname</label>
         <input type="text" class="form-control" id="fullname" v-model="fullname" placeholder="Enter your name">
@@ -52,6 +53,11 @@
                 formSubmittedSuccess: false
             }
         },
+        computed: {
+            ajaxWaiting () {
+                return this.$store.state.ajaxWaiting
+            }
+        },
         methods: {
             submitForm: function (event) {
                 event.preventDefault();
@@ -64,6 +70,7 @@
                     password: this.password,
                 };
 
+                this.$store.commit('ajaxWaiting', true);
                 axios.create().post(API_URL + '/sign-up-handler', body).then(function (response) {
                     if(response.data.status === 400){
                       component.validationErrors = response.data.errors;
@@ -72,11 +79,11 @@
                       component.formSubmittedSuccess = true;
                       component.validationErrors = {};
                     }
+                    component.$store.commit('ajaxWaiting', false);
                 }).catch(function (error) {
-                    let message = 'Internal server error';
-                    alert(message);
-                    console.log(message);
                     console.log(error.response);
+                    component.validationErrors = error.response.data.errors;
+                    component.$store.commit('ajaxWaiting', false);
                 });
             }
         }

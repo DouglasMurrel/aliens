@@ -2,31 +2,27 @@
   <div class="container">
     <h1>Sign In Form</h1>
 
-    <div class="alert alert-success" role="alert" v-if="formSubmittedSuccess && userLoaded">
+    <div class="alert alert-success" role="alert" v-if="loggedIn">
       <div>Congratulations! You successfully signed in as {{ userEmail }}</div>
       <div>{{ userData }}</div>
       <a href='' @click.prevent="logout">Logout</a>
     </div>
 
-    <form method="post" v-on:submit.prevent="submitForm" v-else-if="userLoaded">
+    <h2 v-if="ajaxWaiting">Loading, please wait...</h2>
+    <form method="post" v-on:submit.prevent="submitForm" v-if="!loggedIn && loaded">
+      <small class="form-text text-danger" v-if="validationErrors.password">
+        {{ validationErrors.password }}
+      </small>
       <div class="form-group">
         <label for="email">Email address</label>
         <input type="email" class="form-control" id="email" v-model="email" aria-describedby="emailHelp" placeholder="Enter email">
-        <small class="form-text text-danger" v-if="validationErrors.email">
-          {{ validationErrors.email }}
-        </small>
       </div>
       <div class="form-group">
         <label for="password">Password</label>
         <input type="password" class="form-control" id="password" v-model="password" placeholder="Password" autocomplete="off">
-        <small class="form-text text-danger" v-if="validationErrors.password">
-          {{ validationErrors.password }}
-        </small>
       </div>
       <button type="submit" class="btn btn-success">Login</button>
     </form>
-
-    <div v-else>Please wait</div>
   </div>
 </template>
 
@@ -44,16 +40,21 @@
                 password: '',
 
                 validationErrors: {},
-                formSubmittedSuccess: false,
-                userLoaded: false,
                 authToken: localStorage.getItem('authToken'),
                 refreshToken: localStorage.getItem('refreshToken'),
-                userEmail: ''
+                userEmail: '',
+                loaded: true
             }
         },
         computed: {
             userData () {
                 return this.$store.state.userData
+            },
+            loggedIn () {
+                return this.$store.state.loggedIn
+            },
+            ajaxWaiting () {
+                return this.$store.state.ajaxWaiting
             }
         },
         methods: {
@@ -66,39 +67,43 @@
                     password: this.password,
                 };
 
+                component.$store.commit('ajaxWaiting', true);
                 axios.create().post(API_URL + '/login', body).then(function (response) {
-                    if(response.data.status === 400){
-                      component.validationErrors = response.data.errors;
-                    }
-                    else{
-                      component.formSubmittedSuccess = true;
-                      component.validationErrors = {};
-                      component.userEmail = response.data.user;
-                      component.$store.commit('set',JSON.parse(response.data.userData));
-                      const token = response.data.token;
-                      localStorage.setItem('authToken', token);
-                      const refresh_token = response.data.refresh_token;
-                      localStorage.setItem('refreshToken', refresh_token);
-                    }
+                    component.$store.commit('loggedIn', true);
+                    component.$store.commit('ajaxWaiting', false);
+                    component.validationErrors = {};
+                    component.userEmail = response.data.user;
+                    component.$store.commit('setData',JSON.parse(response.data.userData));
+                    const token = response.data.token;
+                    localStorage.setItem('authToken', token);
+                    const refresh_token = response.data.refresh_token;
+                    localStorage.setItem('refreshToken', refresh_token);
                 }).catch(function (error) {
+                    if(error.response.data.code === 401 && error.response.data.message === 'Invalid credentials.'){
+                      component.validationErrors = {'password': 'Wrong email or password'};
+                      component.$store.commit('ajaxWaiting', false);
+                    }
                     let message = 'Internal server error';
                     console.log(message);
                     console.log(error.response);
+                    component.$store.commit('ajaxWaiting', false);
                 });
             },
             logout: function(event){
                 localStorage.removeItem('authToken');
                 localStorage.removeItem('refreshToken');
-                this.formSubmittedSuccess = false;
+                this.$store.commit('loggedIn', false);
+                component.$store.commit('ajaxWaiting', true);
                 let component = this;
                 axios.create().post(API_URL + '/logout',{}).then(function (response) {
                     if(response.status === 200) {
-                        component.formSubmittedSuccess = false;
+                        component.$store.commit('loggedIn', false);
+                        component.$store.commit('ajaxWaiting', false);
                         component.userEmail = '';
-                        component.$store.commit('set',{});
+                        component.$store.commit('setData',{});
                     }
                 }).catch(function (error) {
-                    console.log(error);
+                    component.$store.commit('ajaxWaiting', false);
                 });
             }
         },
@@ -110,41 +115,41 @@
                         'Authorization': 'Bearer ' + this.authToken,
                     }
                 }
+                component.$store.commit('ajaxWaiting', true);
+                this.loaded = false;
                 axios.create().post(API_URL + '/userinfo',{},axiosConfig).then(function (response) {
                     if(response.status === 200) {
-                        component.formSubmittedSuccess = true;
+                        component.$store.commit('loggedIn', true);
                         component.userEmail = response.data.user;
-                        component.$store.commit('set',JSON.parse(response.data.userData));
-                        component.userLoaded = true;
-                        console.log(component.$store);
+                        component.$store.commit('setData',JSON.parse(response.data.userData));
+                        component.$store.commit('ajaxWaiting', false);
+                        component.loaded = true;
                     }
                 }).catch(function (error) {
                     if (error.response.data.code === 401 && error.response.data.message === 'Expired JWT Token') {
-                        component.userLoaded = false;
-                        component.formSubmittedSuccess = false;
+                        component.$store.commit('ajaxWaiting', true);
+                        component.$store.commit('loggedIn', false);
                         axios.create().post(API_URL + '/token_refresh', {'refresh_token':component.refreshToken}).then(function (response) {
                             if(response.status === 200){
                                 component.validationErrors = {};
                                 component.userEmail = response.data.user;
-                                component.$store.commit('set',JSON.parse(response.data.userData));
+                                component.$store.commit('setData',JSON.parse(response.data.userData));
                                 const token = response.data.token;
                                 localStorage.setItem('authToken', token);
                                 const refresh_token = response.data.refresh_token;
                                 localStorage.setItem('refreshToken', refresh_token);
-                                component.userLoaded = true;
-                                component.formSubmittedSuccess = true;
+                                component.$store.commit('ajaxWaiting', false);
+                                component.$store.commit('loggedIn', true);
+                                component.loaded = true;
                             }   
                         }).catch(function (error) {
-                            component.userLoaded = true;
-                            let message = 'Internal server error';
-                            console.log(message);
-                            console.log(error.response);
+                            component.$store.commit('ajaxWaiting', false);
+                            component.loaded = true;
                         });
                     }
-                    console.log(error);
                 });
             } else {
-                this.userLoaded = true;
+                this.$store.commit('ajaxWaiting', false);
             }
         }
     }

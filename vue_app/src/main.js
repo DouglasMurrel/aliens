@@ -6,15 +6,23 @@ import App from './App.vue'
 const store = createStore({
   state () {
     return {
-        userData: {}
+        userData: {},
+        loggedIn: false,
+        ajaxWaiting: false
     };
   },
   mutations: {
-    set (state, object) {
+    setData (state, object) {
       state.userData = object;
+    },
+    loggedIn (state, flag) {
+      state.loggedIn = flag;
+    },
+    ajaxWaiting (state, flag) {
+      state.ajaxWaiting = flag;
     }
   }
-})
+});
 
 createApp(App)
         .use(router)
