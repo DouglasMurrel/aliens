@@ -8,6 +8,7 @@ use App\Entity\User;
 use App\Http\Request\SignUpRequest;
 use App\Service\SignUpValidator;
 use App\Service\UserCreator;
+use App\Service\UserInfo;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -36,18 +37,22 @@ class UserController extends AbstractController
     private $logger;
     
     private $jwtManager;
-
+    
+    private $userInfo;
+    
     public function __construct(
         SignUpValidator $signUpValidator,
         UserCreator $userCreator,
         LoggerInterface $logger,
-        JWTTokenManagerInterface $jwtManager
+        JWTTokenManagerInterface $jwtManager,
+        UserInfo $userInfo
     )
     {
         $this->userCreator = $userCreator;
         $this->signUpValidator = $signUpValidator;
         $this->logger = $logger;
         $this->jwtManager = $jwtManager;
+        $this->userInfo = $userInfo;
     }
     
     #[Route('/', name: 'empty')]
@@ -73,7 +78,7 @@ class UserController extends AbstractController
         $user = $this->userCreator->createUser($signUpRequest);
 
         return $this->json([
-            'entity' => $user->getId()
+            'entity' => $user->getId(),
         ]);
     }
     
@@ -92,7 +97,6 @@ class UserController extends AbstractController
             'user'  => $user->getUserIdentifier(),
             'token' => $token,
         ]);
-        return new JsonResponse();
     }
     
     #[Route('/userinfo', name: 'userinfo', methods: ['GET','POST'])]
@@ -106,6 +110,7 @@ class UserController extends AbstractController
 
         return $this->json([
             'user'  => $user->getUserIdentifier(),
+            'userData' => $this->userInfo->getUserInfo($user)
         ]);
     }
     
