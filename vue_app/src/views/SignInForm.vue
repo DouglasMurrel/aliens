@@ -22,6 +22,8 @@
         <input type="password" class="form-control" id="password" v-model="password" placeholder="Password" autocomplete="off">
       </div>
       <button type="submit" class="btn btn-success">Login</button>
+
+      <a href="" @click.prevent="vkLogin">or login through VK account</a>
     </form>
   </div>
 </template>
@@ -105,7 +107,35 @@
                 }).catch(function (error) {
                     component.$store.commit('ajaxWaiting', false);
                 });
-            }
+            },
+            vkLogin: function (event) {
+                event.preventDefault();
+
+                let component = this;
+                let body = {};
+
+                component.$store.commit('ajaxWaiting', true);
+                axios.create().post(API_URL + '/login-vk', body).then(function (response) {
+                    component.$store.commit('loggedIn', true);
+                    component.$store.commit('ajaxWaiting', false);
+                    component.validationErrors = {};
+                    component.userEmail = response.data.user;
+                    component.$store.commit('setData',JSON.parse(response.data.userData));
+                    const token = response.data.token;
+                    localStorage.setItem('authToken', token);
+                    const refresh_token = response.data.refresh_token;
+                    localStorage.setItem('refreshToken', refresh_token);
+                }).catch(function (error) {
+                    if(error.response.data.code === 401 && error.response.data.message === 'Invalid credentials.'){
+                      component.validationErrors = {'password': 'Wrong email or password'};
+                      component.$store.commit('ajaxWaiting', false);
+                    }
+                    let message = 'Internal server error';
+                    console.log(message);
+                    console.log(error.response);
+                    component.$store.commit('ajaxWaiting', false);
+                });
+            },
         },
         beforeMount() {
             if (this.authToken) {

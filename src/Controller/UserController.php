@@ -21,6 +21,7 @@ use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Psr\Log\LoggerInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
+use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 
 class UserController extends AbstractController
 {
@@ -112,6 +113,11 @@ class UserController extends AbstractController
             'user'  => $user->getUserIdentifier(),
             'userData' => $this->userInfo->getUserInfo($user)
         ]);
+    }
+    
+    #[Route('/login-vk', name: 'connect_vkontakte_check', methods: ['POST'])]
+    public function loginVkHandler(Request $request, ClientRegistry $clientRegistry): JsonResponse
+    {
     }
     
     private function decodeSignUpRequest(Request $request): SignUpRequest

@@ -33,6 +33,8 @@ security:
             logout:
                 path: /logout
                 target: empty
+            custom_authenticators:
+                - App\Security\VkAuthenticator
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
