@@ -66,7 +66,7 @@ class UserController extends AbstractController
      * @return JsonResponse
      * @throws \Exception
      */
-    #[Route('/sign-up-handler', name: 'sign-up-handler', methods: ['POST'])]
+    #[Route('/sign-up-handler', name: 'sign-up-handler', methods: ['POST','OPTIONS'])]
     public function signUpHandler(Request $request): JsonResponse
     {
         $signUpRequest = $this->decodeSignUpRequest($request);
@@ -83,7 +83,7 @@ class UserController extends AbstractController
         ]);
     }
     
-    #[Route('/login', name: 'login', methods: ['POST'])]
+    #[Route('/login', name: 'login', methods: ['POST','OPTIONS'])]
     public function loginHandler(#[CurrentUser] ?User $user): JsonResponse
     {
         if (null === $user) {
@@ -100,7 +100,7 @@ class UserController extends AbstractController
         ]);
     }
     
-    #[Route('/userinfo', name: 'userinfo', methods: ['GET','POST'])]
+    #[Route('/userinfo', name: 'userinfo', methods: ['POST','OPTIONS'])]
     public function userInfo(#[CurrentUser] ?User $user): JsonResponse
     {
         if (null === $user) {
@@ -115,7 +115,7 @@ class UserController extends AbstractController
         ]);
     }
     
-    #[Route('/login-vk', name: 'connect_vkontakte_check', methods: ['POST'])]
+    #[Route('/login-vk', name: 'connect_vkontakte_check', methods: ['POST','OPTIONS'])]
     public function loginVkHandler(Request $request, ClientRegistry $clientRegistry): JsonResponse
     {
     }
