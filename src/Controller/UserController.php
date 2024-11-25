@@ -115,7 +115,7 @@ class UserController extends AbstractController
         ]);
     }
     
-    #[Route('/login-vk', name: 'connect_vkontakte_check', methods: ['POST','OPTIONS'])]
+    #[Route('/login-vk', name: 'connect_vkontakte_check', methods: ['POST','OPTIONS','GET'])]
     public function loginVkHandler(Request $request, ClientRegistry $clientRegistry): JsonResponse
     {
     }
