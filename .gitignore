@@ -25,4 +25,5 @@ node_modules
 /config/jwt/*.pem
 ###< lexik/jwt-authentication-bundle ###
 /nbproject/private/
-/nbproject
+/nbproject/
+./package.*
