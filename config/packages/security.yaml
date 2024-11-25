@@ -30,6 +30,7 @@ security:
             provider: app_user
             stateless: true
             jwt: ~
+            entry_point: jwt
             logout:
                 path: /logout
                 target: empty
