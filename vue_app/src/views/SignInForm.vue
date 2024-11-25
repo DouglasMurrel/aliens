@@ -23,7 +23,45 @@
       </div>
       <button type="submit" class="btn btn-success">Login</button>
 
-      <a href="" @click.prevent="vkLogin">or login through VK account</a>
+      <div>
+        <script src="https://unpkg.com/@vkid/sdk@<3.0.0/dist-sdk/umd/index.js"></script>
+        <script type="text/javascript">
+            if ('VKIDSDK' in window) {
+            const VKID = window.VKIDSDK;
+
+            VKID.Config.init({
+                app: 52757984,
+                redirectUrl: 'https://aliens.yourwebstudio.ru/login-vk',
+                responseMode: VKID.ConfigResponseMode.Callback,
+                source: VKID.ConfigSource.LOWCODE,
+            });
+
+            const oneTap = new VKID.OneTap();
+
+            oneTap.render({
+                container: document.currentScript.parentElement,
+                showAlternativeLogin: true
+            })
+            .on(VKID.WidgetEvents.ERROR, vkidOnError)
+            .on(VKID.OneTapInternalEvents.LOGIN_SUCCESS, function (payload) {
+                const code = payload.code;
+                const deviceId = payload.device_id;
+
+                VKID.Auth.exchangeCode(code, deviceId)
+                .then(vkidOnSuccess)
+                .catch(vkidOnError);
+            });
+    
+            function vkidOnSuccess(data) {
+                // Обработка полученного результата
+            }
+    
+            function vkidOnError(error) {
+                // Обработка ошибки
+            }
+            }
+        </script>
+        </div>
     </form>
   </div>
 </template>
