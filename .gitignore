@@ -8,7 +8,6 @@
 /vendor/
 /*.bat
 /.composer.phar
-/.composer.lock
 ###< symfony/framework-bundle ###
 
 ###> symfony/phpunit-bridge ###
