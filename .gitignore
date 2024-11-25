@@ -26,4 +26,5 @@ node_modules
 ###< lexik/jwt-authentication-bundle ###
 /nbproject/private/
 /nbproject/
-./package.*
+./package.json
+./package-lock.json
