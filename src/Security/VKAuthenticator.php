@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Security;
+
 use App\Entity\User; // your user entity
 use App\Service\UserCreator;
 use App\Http\Request\SignUpRequest;
