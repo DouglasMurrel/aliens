@@ -261,4 +261,9 @@ class Vkontakte extends AbstractProvider
 
         return array_map($array2friend, $friends);
     }
+    
+    protected function getPkceMethod()
+    {
+        return static::PKCE_METHOD_S256;
+    }
 }

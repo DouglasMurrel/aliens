@@ -52,8 +52,6 @@ class VKAuthenticator extends OAuth2Authenticator implements AuthenticatorInterf
     public function authenticate(Request $request): Passport
     {
         $client = $this->clientRegistry->getClient('vkontakte_client');
-        $this->logger->info((string)$client->getCurrentRequest()->get('state'));
-        $this->logger->info((string)$client->getSession()->get('knpu.oauth2_client_state'));
         $accessToken = $this->fetchAccessToken($client);
 
         return new SelfValidatingPassport(
