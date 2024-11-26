@@ -80,10 +80,12 @@
                       component.validationErrors = {};
                     }
                     component.$store.commit('ajaxWaiting', false);
+                    component.password = '';
                 }).catch(function (error) {
                     console.log(error.response);
                     component.validationErrors = error.response.data.errors;
                     component.$store.commit('ajaxWaiting', false);
+                    component.password = '';
                 });
             }
         }

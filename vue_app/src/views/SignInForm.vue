@@ -81,6 +81,7 @@
                     localStorage.setItem('authToken', token);
                     const refresh_token = response.data.refresh_token;
                     localStorage.setItem('refreshToken', refresh_token);
+                    component.password = '';
                 }).catch(function (error) {
                     if(error.response.data.code === 401 && error.response.data.message === 'Invalid credentials.'){
                       component.validationErrors = {'password': 'Wrong email or password'};
@@ -90,6 +91,7 @@
                     console.log(message);
                     console.log(error.response);
                     component.$store.commit('ajaxWaiting', false);
+                    component.password = '';
                 });
             },
             logout: function(event){
@@ -103,10 +105,12 @@
                         component.$store.commit('loggedIn', false);
                         component.$store.commit('ajaxWaiting', false);
                         component.userEmail = '';
+                        component.password = '';
                         component.$store.commit('setData',{});
                     }
                 }).catch(function (error) {
                     component.$store.commit('ajaxWaiting', false);
+                    component.password = '';
                 });
             },
             vkLogin: function (event) {
@@ -126,6 +130,7 @@
                     localStorage.setItem('authToken', token);
                     const refresh_token = response.data.refresh_token;
                     localStorage.setItem('refreshToken', refresh_token);
+                    component.password = '';
                 }).catch(function (error) {
                     if(error.response.data.code === 401 && error.response.data.message === 'Invalid credentials.'){
                       component.validationErrors = {'password': 'Wrong email or password'};
@@ -135,6 +140,7 @@
                     console.log(message);
                     console.log(error.response);
                     component.$store.commit('ajaxWaiting', false);
+                    component.password = '';
                 });
             },
         },
