@@ -266,4 +266,27 @@ class Vkontakte extends AbstractProvider
     {
         return static::PKCE_METHOD_S256;
     }
+    
+    public function redirect(array $scopes = [], array $options = [])
+    {
+        if (!empty($scopes)) {
+            $options['scope'] = $scopes;
+        }
+
+        $url = $this->provider->getAuthorizationUrl($options);
+
+        // set the state (unless we're stateless)
+        if (!$this->isStateless()) {
+            $this->getSession()->set(
+                self::OAUTH2_SESSION_STATE_KEY,
+                $this->provider->getState()
+            );
+        }
+        
+        $headers = [
+            'Content-Type' => 'application/x-www-form-urlencoded'
+        ];
+        
+        return new RedirectResponse($url, 302, $headers);
+    }
 }
