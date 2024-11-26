@@ -14,7 +14,6 @@
         "doctrine/doctrine-migrations-bundle": "^3.3",
         "doctrine/orm": "^3.3",
         "gesdinet/jwt-refresh-token-bundle": "^1.4",
-        "j4k/oauth2-vkontakte": "dev-master",
         "knpuniversity/oauth2-client-bundle": "^2.18",
         "lexik/jwt-authentication-bundle": "^2.21",
         "symfony/console": "6.4.*",
