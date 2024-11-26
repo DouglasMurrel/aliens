@@ -13,31 +13,26 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
+use Lexik\Bundle\JWTAuthenticationBundle\Event\AuthenticationSuccessEvent;
+use Lexik\Bundle\JWTAuthenticationBundle\Events;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 
 class UserController extends AbstractController
 {
-    /**
-     * @var ValidatorInterface
-     */
     private $signUpValidator;
-
-    /**
-     * @var SignUpValidator
-     */
     private $userCreator;
-    
     private $logger;
     
     private $jwtManager;
+    protected $dispatcher;
     
     private $userInfo;
     
@@ -46,6 +41,7 @@ class UserController extends AbstractController
         UserCreator $userCreator,
         LoggerInterface $logger,
         JWTTokenManagerInterface $jwtManager,
+        EventDispatcherInterface $dispatcher,
         UserInfo $userInfo
     )
     {
@@ -53,6 +49,7 @@ class UserController extends AbstractController
         $this->signUpValidator = $signUpValidator;
         $this->logger = $logger;
         $this->jwtManager = $jwtManager;
+        $this->dispatcher = $dispatcher;
         $this->userInfo = $userInfo;
     }
     
@@ -86,18 +83,7 @@ class UserController extends AbstractController
     #[Route('/login', name: 'login', methods: ['POST','OPTIONS'])]
     public function loginHandler(#[CurrentUser] ?User $user): JsonResponse
     {
-        if (null === $user) {
-            return $this->json([
-                'message' => 'missing credentials',
-            ], Response::HTTP_UNAUTHORIZED);
-        }
-
-        $token = $this->jwtManager->create($user);
-
-        return $this->json([
-            'user'  => $user->getUserIdentifier(),
-            'token' => $token,
-        ]);
+        return new JsonResponse();
     }
     
     #[Route('/userinfo', name: 'userinfo', methods: ['POST','OPTIONS'])]
@@ -115,9 +101,28 @@ class UserController extends AbstractController
         ]);
     }
     
-    #[Route('/login-vk', name: 'connect_vkontakte_check', methods: ['POST','OPTIONS','GET'])]
-    public function loginVkHandler(Request $request, ClientRegistry $clientRegistry): JsonResponse
+    #[Route('/vk-login', name: 'vkontakte-start', methods: ['POST','OPTIONS','GET'])]
+    public function loginVkHandler(Request $request, ClientRegistry $clientRegistry)
     {
+        return $clientRegistry
+            ->getClient('vkontakte_client')
+            ->redirect([]);
+    }
+    
+    #[Route('/vk-login-callback', name: 'connect_vkontakte_check', methods: ['POST','OPTIONS','GET'])]
+    public function loginVkCheck(Request $request, ClientRegistry $clientRegistry): JsonResponse
+    {
+	$client = $clientRegistry->getClient('vkontakte_client');
+        $vkUser = $client->fetchUser();
+        $user = $this->userInfo->getVkUser($vkUser);
+        
+        $jwt = $this->jwtManager->create($user);
+        $response = new JsonResponse(['token' => $jwt]);
+        $event = new AuthenticationSuccessEvent(['token' => $jwt], $user, $response);
+        $this->dispatcher->dispatch($event, Events::AUTHENTICATION_SUCCESS);
+        $responseData = $event->getData();
+        $response->setData($responseData);
+        return $response;
     }
     
     private function decodeSignUpRequest(Request $request): SignUpRequest

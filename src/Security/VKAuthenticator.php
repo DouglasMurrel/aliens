@@ -2,10 +2,10 @@
 
 namespace App\Security;
 
-use App\Entity\User; // your user entity
+use App\Entity\User;
 use App\Service\UserCreator;
+use App\Service\UserInfo;
 use App\Http\Request\SignUpRequest;
-use Doctrine\ORM\EntityManagerInterface;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use KnpU\OAuth2ClientBundle\Security\Authenticator\OAuth2Authenticator;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -18,58 +18,50 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
 use Symfony\Component\Security\Http\Authenticator\AuthenticatorInterface;
+use Psr\Log\LoggerInterface;
 
 class VKAuthenticator extends OAuth2Authenticator implements AuthenticatorInterface
 {
     private $clientRegistry;
-    private $entityManager;
     private $router;
     private $userCreator;
+    private $userInfo;
+    private $logger;
 
     public function __construct(
             ClientRegistry $clientRegistry, 
-            EntityManagerInterface $entityManager, 
             RouterInterface $router,
-            UserCreator $userCreator
+            UserCreator $userCreator,
+            UserInfo $userInfo,
+            LoggerInterface $logger
     )
     {
         $this->clientRegistry = $clientRegistry;
-        $this->entityManager = $entityManager;
         $this->router = $router;
         $this->userCreator = $userCreator;
+        $this->userInfo = $userInfo;
+        $this->logger = $logger;
     }
 
     public function supports(Request $request): ?bool
     {
         // continue ONLY if the current ROUTE matches the check ROUTE
-        return $request->attributes->get('_route') === 'connect_vk_check';
+        return $request->attributes->get('_route') === 'connect_vkontakte_check';
     }
 
     public function authenticate(Request $request): Passport
     {
         $client = $this->clientRegistry->getClient('vkontakte_client');
+        $this->logger->info((string)$client->getCurrentRequest()->get('state'));
+        $this->logger->info((string)$client->getSession()->get('knpu.oauth2_client_state'));
         $accessToken = $this->fetchAccessToken($client);
 
         return new SelfValidatingPassport(
             new UserBadge($accessToken->getToken(), function() use ($accessToken, $client) {
                 $vkUser = $client->fetchUserFromToken($accessToken);
 
-                $email = $vkUser->getEmail();
-
-                $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
-
-                if (!$user) {
-                    $signUpRequest = new SignUpRequest();
-                    $signUpRequest
-                            ->setEmail($email)
-                            ->setFullname($user->getFirstName().' '.$user->getLastName())
-                            ->setPassword($this->randomStr())
-                    ;
-                    $user = $this->userCreator->createUser($signUpRequest);
-                    $this->entityManager->persist($user);
-                    $this->entityManager->flush();
-                }
-
+                $user = $this->userInfo->getVkUser($vkUser);
+                
                 return $user;
             })
         );

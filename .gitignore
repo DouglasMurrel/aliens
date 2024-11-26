@@ -7,7 +7,7 @@
 /var/
 /vendor/
 /*.bat
-/.composer.phar
+./composer.phar
 ###< symfony/framework-bundle ###
 
 ###> symfony/phpunit-bridge ###

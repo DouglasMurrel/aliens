@@ -116,7 +116,7 @@
                 let body = {};
 
                 component.$store.commit('ajaxWaiting', true);
-                axios.create().post(API_URL + '/login-vk', body).then(function (response) {
+                axios.create().post(API_URL + '/vk-login', body).then(function (response) {
                     component.$store.commit('loggedIn', true);
                     component.$store.commit('ajaxWaiting', false);
                     component.validationErrors = {};
