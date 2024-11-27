@@ -286,8 +286,6 @@ class Vkontakte extends AbstractProvider implements LoggerAwareInterface
             'redirect_uri'  => $this->redirectUri,
         ];
 
-        $params['code_verifier'] = $this->getSession()->get(OAuth2PKCEClient::VERIFIER_KEY);
-
         $params   = $grant->prepareRequestParameters($params, $options);
         $request  = $this->getAccessTokenRequest($params);
         $this->logger->info($request->getUri());
