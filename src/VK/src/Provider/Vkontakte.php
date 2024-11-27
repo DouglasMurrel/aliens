@@ -276,7 +276,7 @@ class Vkontakte extends AbstractProvider implements LoggerAwareInterface
     public function getAccessToken($grant, array $options = [])
     {
         $grant = $this->verifyGrant($grant);
-        $this->redirectUri = preg_replace('/^http:/','https://',$this->redirectUri);
+        $this->redirectUri = preg_replace('/^http:\/\//','https://',$this->redirectUri);
         $this->logger->info($grant);
         $this->logger->info(print_r($options,1));
 
