@@ -71,7 +71,7 @@ class VkontakteClient implements OAuth2ClientInterface, LoggerAwareInterface
             'code_challenge' => rtrim(strtr(base64_encode(hash('sha256', $code_verifier, true)), '+/', '-_'), '='),
             'code_challenge_method' => 'S256',
         ];
-        $this->logger->info(rtrim(strtr(base64_encode(hash('sha256', $code_verifier, true)), '+/', '-_'), '='));
+        $this->logger->info($code_verifier);
         
         if (!empty($scopes)) {
             $options['scope'] = $scopes;
