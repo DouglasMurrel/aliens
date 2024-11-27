@@ -2,6 +2,7 @@
 
 namespace App\VK\Provider;
 
+use App\Service\SH256Helper;
 use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Token\AccessToken;
@@ -333,14 +334,7 @@ class Vkontakte extends AbstractProvider implements LoggerAwareInterface
         if (!empty($pkceMethod)) {
             $this->pkceCode = $this->getRandomPkceCode();
             if ($pkceMethod === static::PKCE_METHOD_S256) {
-                $options['code_challenge'] = trim(
-                    strtr(
-                        base64_encode(hash('sha256', $this->pkceCode, true)),
-                        '+/',
-                        '-_'
-                    ),
-                    '='
-                );
+                $options['code_challenge'] = SHA256Helper::SHA256($this->pkceCode);
             } elseif ($pkceMethod === static::PKCE_METHOD_PLAIN) {
                 $options['code_challenge'] = $this->pkceCode;
             } else {

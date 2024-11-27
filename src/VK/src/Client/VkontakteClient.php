@@ -10,6 +10,7 @@
 
 namespace App\VK\Client;
 
+use App\Service\SH256Helper;
 use KnpU\OAuth2ClientBundle\Exception\InvalidStateException;
 use KnpU\OAuth2ClientBundle\Exception\MissingAuthorizationCodeException;
 use KnpU\OAuth2ClientBundle\Client\OAuth2ClientInterface;
@@ -68,7 +69,7 @@ class VkontakteClient implements OAuth2ClientInterface, LoggerAwareInterface
     {
         $this->getSession()->set(static::VERIFIER_KEY, $code_verifier = bin2hex(random_bytes(64)));
         $pkce = [
-            'code_challenge' => rtrim(strtr(base64_encode(hash('sha256', $code_verifier, true)), '+/', '-_'), '='),
+            'code_challenge' => SHA256Helper::SHA256($code_verifier),
             'code_challenge_method' => 'S256',
         ];
         $this->logger->info($code_verifier);
