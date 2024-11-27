@@ -19,6 +19,7 @@ use League\OAuth2\Client\Token\AccessToken;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Psr\Log\LoggerInterface;
 
 class VkontakteClient implements OAuth2ClientInterface
 {
@@ -30,14 +31,17 @@ class VkontakteClient implements OAuth2ClientInterface
     private RequestStack $requestStack;
 
     private bool $isStateless = false;
+    
+    private $logger;
 
     /**
      * OAuth2Client constructor.
      */
-    public function __construct(AbstractProvider $provider, RequestStack $requestStack)
+    public function __construct(AbstractProvider $provider, RequestStack $requestStack, LoggerInterface $logger)
     {
         $this->provider = $provider;
         $this->requestStack = $requestStack;
+        $this->logger = $logger;
     }
 
     /**
