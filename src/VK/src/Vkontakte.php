@@ -5,6 +5,7 @@ namespace App\VK\Provider;
 use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Token\AccessToken;
+use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
@@ -23,9 +24,9 @@ class Vkontakte extends AbstractProvider implements LoggerAwareInterface
      * @see https://vk.com/dev/permissions
      */
     public $scopes = [
-        'email',
-        'friends',
-        'offline',
+//        'email',
+//        'friends',
+//        'offline',
         //'photos',
         //'wall',
         //'ads',
@@ -132,7 +133,7 @@ class Vkontakte extends AbstractProvider implements LoggerAwareInterface
     }
     public function getBaseAccessTokenUrl(array $params)
     {
-        return "$this->baseOAuthUri/access_token";
+        return "$this->baseOAuthUri/oauth2/auth";
     }
     public function getResourceOwnerDetailsUrl(AccessToken $token)
     {
@@ -269,6 +270,45 @@ class Vkontakte extends AbstractProvider implements LoggerAwareInterface
     protected function getPkceMethod()
     {
         return static::PKCE_METHOD_S256;
+    }
+
+    public function getAccessToken($grant, array $options = [])
+    {
+        $grant = $this->verifyGrant($grant);
+        $this->logger->info($grant);
+        $this->logger->info(print_r($options,1));
+
+        $params = [
+            'client_id'     => $this->clientId,
+            'client_secret' => $this->clientSecret,
+            'redirect_uri'  => $this->redirectUri,
+        ];
+
+        if (!empty($this->pkceCode)) {
+            $params['code_verifier'] = $this->pkceCode;
+        }
+
+        $params   = $grant->prepareRequestParameters($params, $options);
+        $request  = $this->getAccessTokenRequest($params);
+        $this->logger->info($request->getUri());
+        $this->logger->info($request->getBody());
+        $response = $this->getParsedResponse($request);
+        if (false === is_array($response)) {
+            throw new UnexpectedValueException(
+                'Invalid response received from Authorization Server. Expected JSON.'
+            );
+        }
+        $prepared = $this->prepareAccessTokenResponse($response);
+        $token    = $this->createAccessToken($prepared, $grant);
+
+        return $token;
+    }
+
+    public function getResponse(RequestInterface $request)
+    {
+        $response = $this->getHttpClient()->send($request);
+//        $this->logger->info($response->getBody());
+        return $response;
     }
 
 }
