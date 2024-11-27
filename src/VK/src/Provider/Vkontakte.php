@@ -321,7 +321,7 @@ class Vkontakte extends AbstractProvider implements LoggerAwareInterface
 //            'approval_prompt' => 'auto'
         ];
 
-        if (is_array($options['scope'])) {
+        if (isset($options['scope']) && is_array($options['scope'])) {
             $separator = $this->getScopeSeparator();
             $options['scope'] = implode($separator, $options['scope']);
         }
