@@ -6,9 +6,13 @@ use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Token\AccessToken;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 
-class Vkontakte extends AbstractProvider
+class Vkontakte extends AbstractProvider implements LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+
     protected $baseOAuthUri = 'https://id.vk.com';
     protected $baseUri      = 'https://api.vk.com/method';
     protected $version      = '5.199';
@@ -266,4 +270,5 @@ class Vkontakte extends AbstractProvider
     {
         return static::PKCE_METHOD_S256;
     }
+
 }

@@ -109,7 +109,7 @@ class UserController extends AbstractController
             ->redirect([],['redirect_uri'=>$request->server->get('HTTP_X_FORWARDED_PROTO').'://'.$request->server->get('HTTP_HOST').'/vk-login-callback']);
     }
     
-    #[Route('/vk-login-callback', name: 'connect_vkontakte_check', methods: ['POST','OPTIONS','GET'])]
+    #[Route('/vk-login-callback', name: 'connect_vkontakte_check', methods: ['GET'])]
     public function loginVkCheck(Request $request, ClientRegistry $clientRegistry): JsonResponse
     {
 	$client = $clientRegistry->getClient('vkontakte_client');

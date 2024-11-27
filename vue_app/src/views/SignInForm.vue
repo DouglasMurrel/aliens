@@ -23,7 +23,8 @@
       </div>
       <button type="submit" class="btn btn-success">Login</button>
       <div>
-        <a href="" @click.prevent="vkLogin">or login through VK account</a>
+        <a href="" v-if="1==0" @click.prevent="vkLogin">or login through VK account</a>
+        <a href="https://api-aliens.yourwebstudio.ru/vk-login">or login through VK account</a>
       </div>
     </form>
   </div>
