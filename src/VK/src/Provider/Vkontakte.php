@@ -2,7 +2,7 @@
 
 namespace App\VK\Provider;
 
-use App\Service\SH256Helper;
+use App\Service\SHA256Helper;
 use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Token\AccessToken;

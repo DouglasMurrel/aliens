@@ -10,7 +10,7 @@
 
 namespace App\VK\Client;
 
-use App\Service\SH256Helper;
+use App\Service\SHA256Helper;
 use KnpU\OAuth2ClientBundle\Exception\InvalidStateException;
 use KnpU\OAuth2ClientBundle\Exception\MissingAuthorizationCodeException;
 use KnpU\OAuth2ClientBundle\Client\OAuth2ClientInterface;
