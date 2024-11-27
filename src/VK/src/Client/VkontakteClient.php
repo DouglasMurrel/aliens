@@ -128,7 +128,7 @@ class VkontakteClient implements OAuth2ClientInterface, LoggerAwareInterface
 
         return $this->provider->getAccessToken(
             'authorization_code',
-            array_merge(['code' => $code,'device_id'=>$deviceId], $options + $pkce)
+            array_merge(['code' => $code,'device_id'=>$deviceId, 'state'=>$actualState], $options + $pkce)
         );
     }
 

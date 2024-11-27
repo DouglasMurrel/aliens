@@ -305,5 +305,57 @@ class Vkontakte extends AbstractProvider implements LoggerAwareInterface
 //        $this->logger->info($response->getBody());
         return $response;
     }
+    protected function getAuthorizationParameters(array $options)
+    {
+        if (empty($options['state'])) {
+            $options['state'] = $this->getRandomState();
+        }
 
+        if (empty($options['scope'])) {
+//            $options['scope'] = $this->getDefaultScopes();
+        }
+
+        $options += [
+            'response_type'   => 'code',
+//            'approval_prompt' => 'auto'
+        ];
+
+        if (is_array($options['scope'])) {
+            $separator = $this->getScopeSeparator();
+            $options['scope'] = implode($separator, $options['scope']);
+        }
+
+        // Store the state as it may need to be accessed later on.
+        $this->state = $options['state'];
+
+        $pkceMethod = $this->getPkceMethod();
+        if (!empty($pkceMethod)) {
+            $this->pkceCode = $this->getRandomPkceCode();
+            if ($pkceMethod === static::PKCE_METHOD_S256) {
+                $options['code_challenge'] = trim(
+                    strtr(
+                        base64_encode(hash('sha256', $this->pkceCode, true)),
+                        '+/',
+                        '-_'
+                    ),
+                    '='
+                );
+            } elseif ($pkceMethod === static::PKCE_METHOD_PLAIN) {
+                $options['code_challenge'] = $this->pkceCode;
+            } else {
+                throw new InvalidArgumentException('Unknown PKCE method "' . $pkceMethod . '".');
+            }
+            $options['code_challenge_method'] = $pkceMethod;
+        }
+
+        // Business code layer might set a different redirect_uri parameter
+        // depending on the context, leave it as-is
+        if (!isset($options['redirect_uri'])) {
+            $options['redirect_uri'] = $this->redirectUri;
+        }
+
+        $options['client_id'] = $this->clientId;
+
+        return $options;
+    }
 }
