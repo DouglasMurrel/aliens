@@ -23,6 +23,7 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 class VkontakteClient implements OAuth2ClientInterface
 {
     public const OAUTH2_SESSION_STATE_KEY = 'knpu.oauth2_client_state';
+    public const VERIFIER_KEY = 'pkce_code_verifier';
 
     private AbstractProvider $provider;
 
@@ -60,11 +61,17 @@ class VkontakteClient implements OAuth2ClientInterface
      */
     public function redirect(array $scopes = [], array $options = [])
     {
+        $this->getSession()->set(static::VERIFIER_KEY, $code_verifier = bin2hex(random_bytes(64)));
+        $pkce = [
+            'code_challenge' => rtrim(strtr(base64_encode(hash('sha256', $code_verifier, true)), '+/', '-_'), '='),
+            'code_challenge_method' => 'S256',
+        ];
+        
         if (!empty($scopes)) {
             $options['scope'] = $scopes;
         }
 
-        $url = $this->provider->getAuthorizationUrl($options);
+        $url = $this->provider->getAuthorizationUrl($options + $pkce);
 
         // set the state (unless we're stateless)
         if (!$this->isStateless()) {
@@ -90,6 +97,12 @@ class VkontakteClient implements OAuth2ClientInterface
      */
     public function getAccessToken(array $options = [])
     {
+        if (!$this->getSession()->has(static::VERIFIER_KEY)) {
+            throw new \LogicException('Unable to fetch token from OAuth2 server because there is no PKCE code verifier stored in the session');
+        }
+        $pkce = ['code_verifier' => $this->getSession()->get(static::VERIFIER_KEY)];
+        $this->getSession()->remove(static::VERIFIER_KEY);
+        
         if (!$this->isStateless()) {
             $expectedState = $this->getSession()->get(self::OAUTH2_SESSION_STATE_KEY);
             $actualState = $this->getCurrentRequest()->get('state');
@@ -99,10 +112,18 @@ class VkontakteClient implements OAuth2ClientInterface
         }
 
         $code = $this->getCurrentRequest()->get('code');
-
         if (!$code) {
             throw new MissingAuthorizationCodeException('No "code" parameter was found (usually this is a query parameter)!');
         }
+        $deviceId = $this->getCurrentRequest()->get('device_id');
+        if (!$deviceId) {
+            throw new MissingAuthorizationCodeException('No "deviceId" parameter was found (usually this is a query parameter)!');
+        }
+
+        return $this->provider->getAccessToken(
+            'authorization_code',
+            array_merge(['code' => $code,'device_id'=>$deviceId], $options)
+        );
 
         return $this->provider->getAccessToken(
             'authorization_code',

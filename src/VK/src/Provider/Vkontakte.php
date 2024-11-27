@@ -9,6 +9,7 @@ use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
+use KnpU\OAuth2ClientBundle\Client\OAuth2PKCEClient;
 
 class Vkontakte extends AbstractProvider implements LoggerAwareInterface
 {
@@ -275,6 +276,7 @@ class Vkontakte extends AbstractProvider implements LoggerAwareInterface
     public function getAccessToken($grant, array $options = [])
     {
         $grant = $this->verifyGrant($grant);
+        $this->redirectUri = preg_replace('/^http:/','https://',$this->redirectUri);
         $this->logger->info($grant);
         $this->logger->info(print_r($options,1));
 
@@ -284,9 +286,7 @@ class Vkontakte extends AbstractProvider implements LoggerAwareInterface
             'redirect_uri'  => $this->redirectUri,
         ];
 
-        if (!empty($this->pkceCode)) {
-            $params['code_verifier'] = $this->pkceCode;
-        }
+        $params['code_verifier'] = $this->getSession()->get(OAuth2PKCEClient::VERIFIER_KEY);
 
         $params   = $grant->prepareRequestParameters($params, $options);
         $request  = $this->getAccessTokenRequest($params);

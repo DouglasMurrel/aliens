@@ -4,7 +4,7 @@ namespace App\Service;
 
 use App\Entity\User;
 use Symfony\Component\Serializer\SerializerInterface;
-use KnpU\OAuth2ClientBundle\Client\Provider\VKontakteClient;
+use App\VK\Client\Provider\User as VkUser;
 
 class UserInfo {
     private $serializer;
@@ -26,7 +26,7 @@ class UserInfo {
         return $json;
     }
     
-    function getVkUser(VKontakteClient $vkUser): User
+    function getVkUser(VkUser $vkUser): User
     {
         $email = $vkUser->getEmail();
 
