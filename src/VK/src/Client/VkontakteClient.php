@@ -80,6 +80,7 @@ class VkontakteClient implements OAuth2ClientInterface
                 $this->provider->getState()
             );
         }
+        $this->logger->info($url);
 
         return new RedirectResponse($url);
     }

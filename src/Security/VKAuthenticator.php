@@ -2,10 +2,8 @@
 
 namespace App\Security;
 
-use App\Entity\User;
 use App\Service\UserCreator;
 use App\Service\UserInfo;
-use App\Http\Request\SignUpRequest;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use KnpU\OAuth2ClientBundle\Security\Authenticator\OAuth2Authenticator;
 use Symfony\Component\HttpFoundation\RedirectResponse;
