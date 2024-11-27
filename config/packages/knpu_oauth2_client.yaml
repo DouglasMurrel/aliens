@@ -3,6 +3,7 @@ knpu_oauth2_client:
         vkontakte_client:
             type: generic
             provider_class: App\VK\Provider\Vkontakte
+            client_class: App\VK\Client\VkontakteClient
             client_id: '%env(VK_API_ID)%'
             client_secret: '%env(VK_SECRET_KEY)%'
             redirect_route: connect_vkontakte_check
