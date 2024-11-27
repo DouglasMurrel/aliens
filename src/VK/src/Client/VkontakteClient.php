@@ -122,12 +122,7 @@ class VkontakteClient implements OAuth2ClientInterface
 
         return $this->provider->getAccessToken(
             'authorization_code',
-            array_merge(['code' => $code,'device_id'=>$deviceId], $options)
-        );
-
-        return $this->provider->getAccessToken(
-            'authorization_code',
-            array_merge(['code' => $code], $options)
+            array_merge(['code' => $code,'device_id'=>$deviceId], $options + $pkce)
         );
     }
 
