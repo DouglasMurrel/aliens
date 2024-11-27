@@ -19,10 +19,14 @@ use League\OAuth2\Client\Token\AccessToken;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Psr\Log\LoggerInterface;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 
-class VkontakteClient implements OAuth2ClientInterface
+
+class VkontakteClient implements OAuth2ClientInterface, LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+    
     public const OAUTH2_SESSION_STATE_KEY = 'knpu.oauth2_client_state';
     public const VERIFIER_KEY = 'pkce_code_verifier';
 
@@ -32,16 +36,13 @@ class VkontakteClient implements OAuth2ClientInterface
 
     private bool $isStateless = false;
     
-    private $logger;
-
     /**
      * OAuth2Client constructor.
      */
-    public function __construct(AbstractProvider $provider, RequestStack $requestStack, LoggerInterface $logger)
+    public function __construct(AbstractProvider $provider, RequestStack $requestStack)
     {
         $this->provider = $provider;
         $this->requestStack = $requestStack;
-        $this->logger = $logger;
     }
 
     /**
