@@ -36,9 +36,8 @@ export default {
               get: (searchParams, prop) => searchParams.get(prop),
 	   });
            if (params.token) {
-               localStorage
-                    .setItem('authToken', params.token)
-                    .setItem('refreshToken', params.refreshToken);
+               localStorage.setItem('authToken', params.token)
+               localStorage.setItem('refreshToken', params.refreshToken)
                window.location.href = '/'
            }
         }
