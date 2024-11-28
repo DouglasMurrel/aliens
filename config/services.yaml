@@ -37,8 +37,4 @@ services:
     aliens.event.before_refresh_token_listener:
         class: App\EventListener\BeforeRefreshTokenListener
         tags:
-            - { name: kernel.event_listener, event: lexik_jwt_authentication.on_authentication_success, method: beforeRefreshToken, priority: 1024 }
-            
-    App\Security\VKAuthenticator:
-        arguments:
-            $returnUrl: '%env(resolve:RETURN_URL)%'            
+            - { name: kernel.event_listener, event: lexik_jwt_authentication.on_authentication_success, method: beforeRefreshToken, priority: 1024 }     

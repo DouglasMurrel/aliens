@@ -17,6 +17,7 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
 use Symfony\Component\Security\Http\Authenticator\AuthenticatorInterface;
 use Psr\Log\LoggerInterface;
+use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 
 class VKAuthenticator extends OAuth2Authenticator implements AuthenticatorInterface
 {
@@ -26,6 +27,8 @@ class VKAuthenticator extends OAuth2Authenticator implements AuthenticatorInterf
     private $userInfo;
     private $logger;
     private $returnUrl;
+    private $jwtManager;
+    private $jwt;
 
     public function __construct(
             ClientRegistry $clientRegistry, 
@@ -33,15 +36,14 @@ class VKAuthenticator extends OAuth2Authenticator implements AuthenticatorInterf
             UserCreator $userCreator,
             UserInfo $userInfo,
             LoggerInterface $logger,
-            string $returnUrl
-    )
+            JWTTokenManagerInterface $jwtManager    )
     {
         $this->clientRegistry = $clientRegistry;
         $this->router = $router;
         $this->userCreator = $userCreator;
         $this->userInfo = $userInfo;
         $this->logger = $logger;
-        $this->returnUrl = $returnUrl;
+        $this->jwtManager = $jwtManager;
     }
 
     public function supports(Request $request): ?bool
@@ -60,6 +62,8 @@ class VKAuthenticator extends OAuth2Authenticator implements AuthenticatorInterf
                 $vkUser = $client->fetchUserFromToken($accessToken);
 
                 $user = $this->userInfo->getVkUser($vkUser);
+
+                $this->jwt = $this->jwtManager->create($user);
                 
                 return $user;
             })
@@ -68,7 +72,7 @@ class VKAuthenticator extends OAuth2Authenticator implements AuthenticatorInterf
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
-        return new RedirectResponse($this->returnUrl);
+        return new Response($this->jwt);
     
         // or, on success, let the request continue to be handled by the controller
         //return null;
