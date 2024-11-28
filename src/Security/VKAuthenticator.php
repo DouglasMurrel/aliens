@@ -36,7 +36,9 @@ class VKAuthenticator extends OAuth2Authenticator implements AuthenticatorInterf
             UserCreator $userCreator,
             UserInfo $userInfo,
             LoggerInterface $logger,
-            JWTTokenManagerInterface $jwtManager    )
+            JWTTokenManagerInterface $jwtManager,
+            string $returnUrl
+    )
     {
         $this->clientRegistry = $clientRegistry;
         $this->router = $router;
@@ -44,6 +46,7 @@ class VKAuthenticator extends OAuth2Authenticator implements AuthenticatorInterf
         $this->userInfo = $userInfo;
         $this->logger = $logger;
         $this->jwtManager = $jwtManager;
+        $this->returnUrl = $returnUrl;
     }
 
     public function supports(Request $request): ?bool
@@ -72,7 +75,7 @@ class VKAuthenticator extends OAuth2Authenticator implements AuthenticatorInterf
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
-        return new Response($this->jwt);
+        return new RedirectResponse($this->returnUrl . '?token=' . $this->jwt);
     
         // or, on success, let the request continue to be handled by the controller
         //return null;
