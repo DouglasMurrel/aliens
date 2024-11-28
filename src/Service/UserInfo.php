@@ -4,7 +4,7 @@ namespace App\Service;
 
 use App\Entity\User;
 use Symfony\Component\Serializer\SerializerInterface;
-use App\VK\Client\Provider\User as VkUser;
+use App\VK\Provider\User as VkUser;
 
 class UserInfo {
     private $serializer;
