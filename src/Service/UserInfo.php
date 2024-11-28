@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Entity\User;
 use Symfony\Component\Serializer\SerializerInterface;
 use App\VK\Provider\User as VkUser;
+use App\Http\Request\SignUpRequest;
 use Doctrine\ORM\EntityManagerInterface;
 
 class UserInfo {
