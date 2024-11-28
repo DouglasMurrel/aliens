@@ -7,18 +7,22 @@ use Symfony\Component\Serializer\SerializerInterface;
 use App\VK\Provider\User as VkUser;
 use App\Http\Request\SignUpRequest;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Service\UserCreator;
 
 class UserInfo {
     private $serializer;
     private $entityManager;
+    private $userCreator;
     
     public function __construct(
         EntityManagerInterface $entityManager,
+        UserCreator $userCreator,
         SerializerInterface $serializer
     )
     {
         $this->entityManager = $entityManager;
         $this->serializer = $serializer;
+        $this->userCreator = $userCreator;
     }
     
     public function getUserInfo(User $user) 
