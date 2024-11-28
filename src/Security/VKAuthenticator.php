@@ -19,6 +19,7 @@ use Symfony\Component\Security\Http\Authenticator\AuthenticatorInterface;
 use Psr\Log\LoggerInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Gesdinet\JWTRefreshTokenBundle\Generator\RefreshTokenGeneratorInterface;
+use Gesdinet\JWTRefreshTokenBundle\Model\RefreshTokenManagerInterface;
 
 class VKAuthenticator extends OAuth2Authenticator implements AuthenticatorInterface
 {
@@ -29,7 +30,8 @@ class VKAuthenticator extends OAuth2Authenticator implements AuthenticatorInterf
     private $logger;
     private $returnUrl;
     private $jwtManager;
-    protected $refreshTokenGenerator;
+    private $refreshTokenGenerator;
+    private $refreshTokenManager;
     private $jwt;
     private $refreshToken;
 
@@ -41,6 +43,7 @@ class VKAuthenticator extends OAuth2Authenticator implements AuthenticatorInterf
             LoggerInterface $logger,
             JWTTokenManagerInterface $jwtManager,
             RefreshTokenGeneratorInterface $refreshTokenGenerator,
+            RefreshTokenManagerInterface $refreshTokenManager,
             string $returnUrl
     )
     {
@@ -51,6 +54,7 @@ class VKAuthenticator extends OAuth2Authenticator implements AuthenticatorInterf
         $this->logger = $logger;
         $this->jwtManager = $jwtManager;
         $this->refreshTokenGenerator = $refreshTokenGenerator;
+        $this->refreshTokenManager = $refreshTokenManager;
         $this->returnUrl = $returnUrl;
     }
 
@@ -73,6 +77,7 @@ class VKAuthenticator extends OAuth2Authenticator implements AuthenticatorInterf
 
                 $this->jwt = $this->jwtManager->create($user);
                 $this->refreshToken = $this->refreshTokenGenerator->createForUserWithTtl($user, 2592000);
+                $this->refreshTokenManager->save($this->refreshToken);
                 
                 return $user;
             })
