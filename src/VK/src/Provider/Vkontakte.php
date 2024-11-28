@@ -334,7 +334,8 @@ class Vkontakte extends AbstractProvider implements LoggerAwareInterface
         if (!empty($pkceMethod)) {
             $this->pkceCode = $this->getRandomPkceCode();
             if ($pkceMethod === static::PKCE_METHOD_S256) {
-                $options['code_challenge'] = SHA256Helper::SHA256($this->pkceCode);
+                $sha = new SHA256Helper();
+                $options['code_challenge'] = $sha->SHA256($this->pkceCode);
             } elseif ($pkceMethod === static::PKCE_METHOD_PLAIN) {
                 $options['code_challenge'] = $this->pkceCode;
             } else {

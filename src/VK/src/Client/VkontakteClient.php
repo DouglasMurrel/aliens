@@ -68,8 +68,9 @@ class VkontakteClient implements OAuth2ClientInterface, LoggerAwareInterface
     public function redirect(array $scopes = [], array $options = [])
     {
         $this->getSession()->set(static::VERIFIER_KEY, $code_verifier = bin2hex(random_bytes(64)));
+        $sha = new SHA256Helper();
         $pkce = [
-            'code_challenge' => SHA256Helper::SHA256($code_verifier),
+            'code_challenge' => $sha->SHA256($code_verifier),
             'code_challenge_method' => 'S256',
         ];
         $this->logger->info($code_verifier);

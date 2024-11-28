@@ -2,10 +2,25 @@
 
 namespace App\Service;
 
+use Psr\Log\LoggerInterface;
+
 class SHA256Helper {
-    public static function SHA256(?string $s): string
+    private $logger;
+
+    public function __construct(
+            LoggerInterface $logger
+    )
+    {
+        $this->logger = $logger;
+    }
+    
+    public function SHA256(?string $s): string
     {
         $s = (string)$s;
-        return rtrim(strtr(base64_encode(hash('sha256', $s, true)), '+/', '-_'), '=');
+        $sha = hash('sha256', $s, true);
+        $this->logger->info("sha: ".$sha);
+        $bse = base64_encode($sha);
+        $this->logger->info("bse: ".$sha);
+        return rtrim(strtr($bse, '+/', '-_'), '=');
     }
 }
