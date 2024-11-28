@@ -38,7 +38,7 @@ export default {
            if (params.token) {
                localStorage
                     .setItem('authToken', params.token)
-                    .setItem('refreshToken', params.refreshToken)
+                    .setItem('refreshToken', params.refreshToken);
                window.location.href = '/'
            }
         }
