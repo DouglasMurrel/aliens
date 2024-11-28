@@ -185,6 +185,10 @@
                             component.$store.commit('ajaxWaiting', false);
                             component.loaded = true;
                         });
+                    } else {
+                        component.$store.commit('ajaxWaiting', false);
+                        component.loaded = true;
+                        component.validationErrors = {'password': 'Wrong email or password'};
                     }
                 });
             } else {

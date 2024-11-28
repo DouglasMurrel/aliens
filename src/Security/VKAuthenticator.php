@@ -18,6 +18,7 @@ use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPasspor
 use Symfony\Component\Security\Http\Authenticator\AuthenticatorInterface;
 use Psr\Log\LoggerInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
+use Gesdinet\JWTRefreshTokenBundle\Generator\RefreshTokenGeneratorInterface;
 
 class VKAuthenticator extends OAuth2Authenticator implements AuthenticatorInterface
 {
@@ -28,7 +29,9 @@ class VKAuthenticator extends OAuth2Authenticator implements AuthenticatorInterf
     private $logger;
     private $returnUrl;
     private $jwtManager;
+    protected $refreshTokenGenerator;
     private $jwt;
+    private $refreshToken;
 
     public function __construct(
             ClientRegistry $clientRegistry, 
@@ -37,6 +40,7 @@ class VKAuthenticator extends OAuth2Authenticator implements AuthenticatorInterf
             UserInfo $userInfo,
             LoggerInterface $logger,
             JWTTokenManagerInterface $jwtManager,
+            RefreshTokenGeneratorInterface $refreshTokenGenerator,
             string $returnUrl
     )
     {
@@ -46,6 +50,7 @@ class VKAuthenticator extends OAuth2Authenticator implements AuthenticatorInterf
         $this->userInfo = $userInfo;
         $this->logger = $logger;
         $this->jwtManager = $jwtManager;
+        $this->refreshTokenGenerator = $refreshTokenGenerator;
         $this->returnUrl = $returnUrl;
     }
 
@@ -67,6 +72,7 @@ class VKAuthenticator extends OAuth2Authenticator implements AuthenticatorInterf
                 $user = $this->userInfo->getVkUser($vkUser);
 
                 $this->jwt = $this->jwtManager->create($user);
+                $this->refreshToken = $this->refreshTokenGenerator->createForUserWithTtl($user, 2592000);
                 
                 return $user;
             })
@@ -75,7 +81,7 @@ class VKAuthenticator extends OAuth2Authenticator implements AuthenticatorInterf
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
-        return new RedirectResponse($this->returnUrl . '?token=' . $this->jwt);
+        return new RedirectResponse($this->returnUrl . '?token=' . $this->jwt  . '&refreshToken=' . $this->refreshToken);
     
         // or, on success, let the request continue to be handled by the controller
         //return null;
