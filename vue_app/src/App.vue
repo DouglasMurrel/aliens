@@ -35,8 +35,10 @@ export default {
 	   const params = new Proxy(new URLSearchParams(window.location.search), {
               get: (searchParams, prop) => searchParams.get(prop),
 	   });
-           localStorage.setItem('authToken', token)
-           window.location.href = '/'
+           if (params.token) 
+               localStorage.setItem('authToken', params.token)
+               window.location.href = '/'
+           }
         }
 }
 </script>
