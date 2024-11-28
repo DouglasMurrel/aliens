@@ -5,14 +5,18 @@ namespace App\Service;
 use App\Entity\User;
 use Symfony\Component\Serializer\SerializerInterface;
 use App\VK\Provider\User as VkUser;
+use Doctrine\ORM\EntityManagerInterface;
 
 class UserInfo {
     private $serializer;
+    private $entityManager;
     
     public function __construct(
+        EntityManagerInterface $entityManager,
         SerializerInterface $serializer
     )
     {
+        $this->entityManager = $entityManager;
         $this->serializer = $serializer;
     }
     
