@@ -16,7 +16,8 @@ class Vkontakte extends AbstractProvider implements LoggerAwareInterface
     use LoggerAwareTrait;
 
     protected $baseOAuthUri = 'https://id.vk.com';
-    protected $baseUri      = 'https://api.vk.com/method';
+//    protected $baseUri      = 'https://api.vk.com/method';
+    protected $baseUri      = 'https://id.vk.com/oauth2';
     protected $version      = '5.199';
     protected $language     = null;
 
@@ -138,16 +139,35 @@ class Vkontakte extends AbstractProvider implements LoggerAwareInterface
     }
     public function getResourceOwnerDetailsUrl(AccessToken $token)
     {
+        $tokenValues = $token->getValues();
         $params = [
-            'fields'       => $this->userFields,
-            'access_token' => $token->getToken(),
-            'v'            => $this->version,
-            'lang'         => $this->language
+//            'fields'       => $this->userFields,
+            'access_token' => $tokenValues['id_token'],
+            'client_id' => $this->clientId
+//            'v'            => $this->version,
+//            'lang'         => $this->language
         ];
+$this->logger->info($token->getToken());
         $query  = $this->buildQueryString($params);
-        $url    = "$this->baseUri/users.get?$query";
+        $url    = "$this->baseUri/user_info?$query";
 
         return $url;
+    }
+    protected function fetchResourceOwnerDetails(AccessToken $token)
+    {
+        $url = $this->getResourceOwnerDetailsUrl($token);
+
+        $request = $this->getAuthenticatedRequest(self::METHOD_POST, $url, $token);
+
+        $response = $this->getParsedResponse($request);
+
+        if (false === is_array($response)) {
+            throw new UnexpectedValueException(
+                'Invalid response received from Authorization Server. Expected JSON.'
+            );
+        }
+
+        return $response;
     }
     protected function getDefaultScopes()
     {
@@ -286,8 +306,6 @@ class Vkontakte extends AbstractProvider implements LoggerAwareInterface
 
         $params   = $grant->prepareRequestParameters($params, $options);
         $request  = $this->getAccessTokenRequest($params);
-        $this->logger->info($request->getUri());
-        $this->logger->info($request->getBody());
         $response = $this->getParsedResponse($request);
         if (false === is_array($response)) {
             throw new UnexpectedValueException(
@@ -303,6 +321,9 @@ class Vkontakte extends AbstractProvider implements LoggerAwareInterface
     public function getResponse(RequestInterface $request)
     {
         $response = $this->getHttpClient()->send($request);
+        $this->logger->info($request->getUri());
+        $this->logger->info($request->getMethod());
+        $this->logger->info(print_r($request->getHeaders(),1));
         $this->logger->info($response->getBody());
         return $response;
     }
