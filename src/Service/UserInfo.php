@@ -41,7 +41,7 @@ class UserInfo {
             $signUpRequest = new SignUpRequest();
             $signUpRequest
                 ->setEmail($email)
-                ->setFullname($user->getFirstName().' '.$user->getLastName())
+                ->setFullname($vkUser->getFirstName().' '.$vkUser->getLastName())
                 ->setPassword($this->randomStr())
             ;
             $user = $this->userCreator->createUser($signUpRequest);
