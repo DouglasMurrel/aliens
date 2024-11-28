@@ -24,7 +24,7 @@
       <button type="submit" class="btn btn-success">Login</button>
       <div>
         <a href="" v-if="1==0" @click.prevent="vkLogin">or login through VK account</a>
-        <a href="https://api-aliens.yourwebstudio.ru/vk-login">or login through VK account</a>
+        <a :href="vkLoginUrl">or login through VK account</a>
       </div>
     </form>
   </div>
@@ -32,7 +32,7 @@
 
 <script>
     import axios from 'axios'
-    import {API_URL} from '../config.local'
+    import {API_URL, VK_LOGIN_URL} from '../config.local'
 
     export default {
         name: 'SignUpForm',
@@ -47,7 +47,8 @@
                 authToken: localStorage.getItem('authToken'),
                 refreshToken: localStorage.getItem('refreshToken'),
                 userEmail: '',
-                loaded: true
+                loaded: true,
+                vkLoginUrl: VK_LOGIN_URL
             }
         },
         computed: {
@@ -121,7 +122,7 @@
                 let body = {};
 
                 component.$store.commit('ajaxWaiting', true);
-                axios.create().post(API_URL + '/vk-login', body).then(function (response) {
+                axios.create().post(VK_LOGIN_URL, body).then(function (response) {
                     component.$store.commit('loggedIn', true);
                     component.$store.commit('ajaxWaiting', false);
                     component.validationErrors = {};

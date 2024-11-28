@@ -25,13 +25,15 @@ class VKAuthenticator extends OAuth2Authenticator implements AuthenticatorInterf
     private $userCreator;
     private $userInfo;
     private $logger;
+    private $returnUrl;
 
     public function __construct(
             ClientRegistry $clientRegistry, 
             RouterInterface $router,
             UserCreator $userCreator,
             UserInfo $userInfo,
-            LoggerInterface $logger
+            LoggerInterface $logger,
+            string $returnUrl
     )
     {
         $this->clientRegistry = $clientRegistry;
@@ -39,6 +41,7 @@ class VKAuthenticator extends OAuth2Authenticator implements AuthenticatorInterf
         $this->userCreator = $userCreator;
         $this->userInfo = $userInfo;
         $this->logger = $logger;
+        $this->returnUrl = $returnUrl;
     }
 
     public function supports(Request $request): ?bool
@@ -65,9 +68,7 @@ class VKAuthenticator extends OAuth2Authenticator implements AuthenticatorInterf
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
-        $targetUrl = 'https://aliens.yourwebstudio.ru/';
-
-        return new RedirectResponse($targetUrl);
+        return new RedirectResponse($this->returnUrl);
     
         // or, on success, let the request continue to be handled by the controller
         //return null;
