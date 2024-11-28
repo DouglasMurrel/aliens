@@ -215,7 +215,7 @@ class Vkontakte extends AbstractProvider implements LoggerAwareInterface
     }
     protected function createResourceOwner(array $response, AccessToken $token)
     {
-        $response   = reset($response]);
+        $response   = reset($response);
         $additional = $token->getValues();
         if (!empty($additional['email'])) {
             $response['email'] = $additional['email'];
