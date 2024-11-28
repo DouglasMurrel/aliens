@@ -65,8 +65,7 @@ class VKAuthenticator extends OAuth2Authenticator implements AuthenticatorInterf
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
-        // change "app_homepage" to some route in your app
-        $targetUrl = $this->router->generate('login');
+        $targetUrl = $this->router->generate('empty');
 
         return new RedirectResponse($targetUrl);
     

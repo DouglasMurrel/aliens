@@ -112,17 +112,7 @@ class UserController extends AbstractController
     #[Route('/vk-login-callback', name: 'connect_vkontakte_check', methods: ['GET'])]
     public function loginVkCheck(Request $request, ClientRegistry $clientRegistry): JsonResponse
     {
-	$client = $clientRegistry->getClient('vkontakte_client');
-        $vkUser = $client->fetchUser();
-        $user = $this->userInfo->getVkUser($vkUser);
-        
-        $jwt = $this->jwtManager->create($user);
-        $response = new JsonResponse(['token' => $jwt]);
-        $event = new AuthenticationSuccessEvent(['token' => $jwt], $user, $response);
-        $this->dispatcher->dispatch($event, Events::AUTHENTICATION_SUCCESS);
-        $responseData = $event->getData();
-        $response->setData($responseData);
-        return $response;
+        return new JsonResponse();
     }
     
     private function decodeSignUpRequest(Request $request): SignUpRequest
