@@ -2,7 +2,6 @@
 
 namespace App\VK\Provider;
 
-use App\Service\SHA256Helper;
 use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Token\AccessToken;
@@ -51,23 +50,23 @@ class Vkontakte extends AbstractProvider implements LoggerAwareInterface
      * @see https://new.vk.com/dev/fields
      */
     public $userFields = [
-        'bdate',
-        'city',
-        'country',
-        'domain',
-        'first_name',
-        'friend_status',
-        'has_photo',
-        'home_town',
-        'id',
-        'is_friend',
-        'last_name',
-        'maiden_name',
-        'nickname',
-        'photo_max',
-        'photo_max_orig',
-        'screen_name',
-        'sex',
+//        'bdate',
+//        'city',
+//        'country',
+//        'domain',
+//        'first_name',
+//        'friend_status',
+//        'has_photo',
+//        'home_town',
+//        'id',
+//        'is_friend',
+//        'last_name',
+//        'maiden_name',
+//        'nickname',
+//        'photo_max',
+//        'photo_max_orig',
+//        'screen_name',
+//        'sex',
         //'about',
         //'activities',
         //'blacklisted',
@@ -142,22 +141,34 @@ class Vkontakte extends AbstractProvider implements LoggerAwareInterface
         $tokenValues = $token->getValues();
         $params = [
 //            'fields'       => $this->userFields,
-            'access_token' => $tokenValues['id_token'],
-            'client_id' => $this->clientId
+//            'access_token' => $token->getToken(),
 //            'v'            => $this->version,
 //            'lang'         => $this->language
+
+
+//            'access_token' => $tokenValues['id_token'],
+            'access_token' => $token->getToken(),
+            'id_token' => $tokenValues['id_token'],
+            'client_id' => $this->clientId
         ];
-$this->logger->info($token->getToken());
         $query  = $this->buildQueryString($params);
+//        $url    = "$this->baseUri/users.get?$query";
         $url    = "$this->baseUri/user_info?$query";
 
         return $url;
     }
+    protected function getDefaultHeaders()
+    {
+        return ['Content-Type'=>'application/x-www-form-urlencoded'];
+    }
     protected function fetchResourceOwnerDetails(AccessToken $token)
     {
         $url = $this->getResourceOwnerDetailsUrl($token);
+        $body = parse_url($url, PHP_URL_QUERY);
+        $url = preg_replace('/\?.*/','',$url);
 
-        $request = $this->getAuthenticatedRequest(self::METHOD_POST, $url, $token);
+        $request = $this->getAuthenticatedRequest(self::METHOD_POST, $url, $token, ['body'=>$body]);
+//        $request = $this->getAuthenticatedRequest(self::METHOD_GET, $url, $token);
 
         $response = $this->getParsedResponse($request);
 
@@ -204,7 +215,7 @@ $this->logger->info($token->getToken());
     }
     protected function createResourceOwner(array $response, AccessToken $token)
     {
-        $response   = reset($response['response']);
+        $response   = reset($response]);
         $additional = $token->getValues();
         if (!empty($additional['email'])) {
             $response['email'] = $additional['email'];
@@ -216,7 +227,7 @@ $this->logger->info($token->getToken());
             $response['id'] = $additional['user_id'];
         }
 
-        return new User($response, $response['id']);
+        return new User($response);
     }
 
     /**
@@ -322,6 +333,7 @@ $this->logger->info($token->getToken());
     {
         $response = $this->getHttpClient()->send($request);
         $this->logger->info($request->getUri());
+        $this->logger->info($request->getBody());
         $this->logger->info($request->getMethod());
         $this->logger->info(print_r($request->getHeaders(),1));
         $this->logger->info($response->getBody());
