@@ -19,7 +19,8 @@
       </div>
       <div class="form-group">
         <label for="password">Password</label>
-        <input type="password" class="form-control" id="password" v-model="password" placeholder="Password" autocomplete="off">
+        <input :type="showPass ? 'text' : 'password'" class="form-control" id="password" v-model="password" placeholder="Password" autocomplete="off">
+        <a v-html="showPass ? 'Спрятать пароль' : 'Показать пароль'" href="" @click.prevent="showPass=!showPass"></a>
       </div>
       <button type="submit" class="btn btn-success">Login</button>
       <div>
@@ -42,6 +43,7 @@
 
                 email: '',
                 password: '',
+                showPass: false,
 
                 validationErrors: {},
                 authToken: localStorage.getItem('authToken'),
@@ -89,9 +91,7 @@
                       component.validationErrors = {'password': 'Wrong email or password'};
                       component.$store.commit('ajaxWaiting', false);
                     }
-                    let message = 'Internal server error';
-                    console.log(message);
-                    console.log(error.response);
+//                    console.log(error.response);
                     component.$store.commit('ajaxWaiting', false);
                     component.password = '';
                 });
@@ -106,7 +106,6 @@
                     if(response.status === 200) {
                         component.$store.commit('loggedIn', false);
                         component.$store.commit('ajaxWaiting', false);
-                        component.userEmail = '';
                         component.password = '';
                         component.$store.commit('setData',{});
                     }
@@ -132,17 +131,13 @@
                     localStorage.setItem('authToken', token);
                     const refresh_token = response.data.refresh_token;
                     localStorage.setItem('refreshToken', refresh_token);
-                    component.password = '';
                 }).catch(function (error) {
                     if(error.response.data.code === 401 && error.response.data.message === 'Invalid credentials.'){
                       component.validationErrors = {'password': 'Wrong email or password'};
                       component.$store.commit('ajaxWaiting', false);
                     }
-                    let message = 'Internal server error';
-                    console.log(message);
-                    console.log(error.response);
+//                    console.log(error.response);
                     component.$store.commit('ajaxWaiting', false);
-                    component.password = '';
                 });
             },
         },

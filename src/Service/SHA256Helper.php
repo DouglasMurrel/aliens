@@ -17,11 +17,8 @@ class SHA256Helper {
     public function SHA256(?string $s): string
     {
         $s = (string)$s;
-        $this->logger->info("begin: ".$s);
         $sha = hash('sha256', $s, true);
-        $this->logger->info("sha: ".$sha);
         $bse = base64_encode($sha);
-        $this->logger->info("bse: ".$sha);
         return rtrim(strtr($bse, '+/', '-_'), '=');
     }
 }

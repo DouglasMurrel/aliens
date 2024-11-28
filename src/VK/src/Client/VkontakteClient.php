@@ -73,7 +73,6 @@ class VkontakteClient implements OAuth2ClientInterface, LoggerAwareInterface
             'code_challenge' => $sha->SHA256($code_verifier),
             'code_challenge_method' => 'S256',
         ];
-        $this->logger->info($code_verifier);
         
         if (!empty($scopes)) {
             $options['scope'] = $scopes;
@@ -88,7 +87,6 @@ class VkontakteClient implements OAuth2ClientInterface, LoggerAwareInterface
                 $this->provider->getState()
             );
         }
-        $this->logger->info($url);
 
         return new RedirectResponse($url);
     }
@@ -110,7 +108,6 @@ class VkontakteClient implements OAuth2ClientInterface, LoggerAwareInterface
             throw new \LogicException('Unable to fetch token from OAuth2 server because there is no PKCE code verifier stored in the session');
         }
         $codeVerifier = $this->getSession()->get(static::VERIFIER_KEY);
-        $this->logger->info($codeVerifier);
         $pkce = ['code_verifier' => $codeVerifier];
         $this->getSession()->remove(static::VERIFIER_KEY);
         

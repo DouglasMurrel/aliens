@@ -332,11 +332,6 @@ class Vkontakte extends AbstractProvider implements LoggerAwareInterface
     public function getResponse(RequestInterface $request)
     {
         $response = $this->getHttpClient()->send($request);
-        $this->logger->info($request->getUri());
-        $this->logger->info($request->getBody());
-        $this->logger->info($request->getMethod());
-        $this->logger->info(print_r($request->getHeaders(),1));
-        $this->logger->info($response->getBody());
         return $response;
     }
     

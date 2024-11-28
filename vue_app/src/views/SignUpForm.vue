@@ -24,10 +24,16 @@
       </div>
       <div class="form-group">
         <label for="password">Password</label>
-        <input type="password" class="form-control" autocomplete="off" id="password" v-model="password" placeholder="Password">
+        <input :type="showPass ? 'text' : 'password'" class="form-control" autocomplete="off" id="password" v-model="password" placeholder="Password">
+        <a v-html="showPass ? 'Спрятать пароль' : 'Показать пароль'" href="" @click.prevent="showPass=!showPass"></a>
         <small class="form-text text-danger" v-if="validationErrors.password">
           {{ validationErrors.password }}
         </small>
+      </div>
+      <div class="form-group">
+        <label for="password1">Repeat password</label>
+        <input type="password" class="form-control" autocomplete="off" id="password1" v-model="password1" placeholder="Repeat password">
+        <a v-html="showPass1 ? 'Спрятать пароль' : 'Показать пароль'" href="" @click.prevent="showPass1=!showPass1"></a>
       </div>
       <button type="submit" class="btn btn-success">Register</button>
     </form>
@@ -48,6 +54,9 @@
                 username: '',
                 email: '',
                 password: '',
+                showPass: false,
+                password1: '',
+                showPass1: false,
 
                 validationErrors: {},
                 formSubmittedSuccess: false
@@ -61,6 +70,11 @@
         methods: {
             submitForm: function (event) {
                 event.preventDefault();
+
+                if (this.password!==this.password1) {
+                    this.validationErrors = {'password': 'Passwords are not equal'};
+                    return;
+                }
 
                 let component = this;
                 let body = {
@@ -80,12 +94,10 @@
                       component.validationErrors = {};
                     }
                     component.$store.commit('ajaxWaiting', false);
-                    component.password = '';
                 }).catch(function (error) {
-                    console.log(error.response);
+//                    console.log(error.response);
                     component.validationErrors = error.response.data.errors;
                     component.$store.commit('ajaxWaiting', false);
-                    component.password = '';
                 });
             }
         }
