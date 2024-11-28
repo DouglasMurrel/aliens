@@ -31,11 +31,12 @@ export default {
                 return this.$store.state.ajaxWaiting
             }
         },
-        beforeMount() {
+        beforeCreate() {
 	   const params = new Proxy(new URLSearchParams(window.location.search), {
               get: (searchParams, prop) => searchParams.get(prop),
 	   });
-	   console.log(params.token)
+           localStorage.setItem('authToken', token)
+           window.location.href = '/'
         }
 }
 </script>
