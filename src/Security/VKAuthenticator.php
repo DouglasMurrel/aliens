@@ -65,7 +65,7 @@ class VKAuthenticator extends OAuth2Authenticator implements AuthenticatorInterf
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
-        $targetUrl = $this->router->generate('empty');
+        $targetUrl = 'https://api-aliens.yourwebstudio.ru/';
 
         return new RedirectResponse($targetUrl);
     
