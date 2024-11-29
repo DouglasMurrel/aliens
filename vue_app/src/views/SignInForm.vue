@@ -19,8 +19,15 @@
       </div>
       <div class="form-group">
         <label for="password">Password</label>
-        <input :type="showPass ? 'text' : 'password'" class="form-control" id="password" v-model="password" placeholder="Password" autocomplete="off">
-        <a v-html="showPass ? 'Спрятать пароль' : 'Показать пароль'" href="" @click.prevent="showPass=!showPass"></a>
+        <div class="input-group mr-sm-2">
+            <input :type="showPass ? 'text' : 'password'" class="form-control" autocomplete="off" id="password" v-model="password" placeholder="Password">
+            <div class="input-group-prepend">
+                <div class="input-group-text" role="button" @click="showPass=!showPass">
+                    <font-awesome-icon v-if="showPass" icon="fa-solid fa-eye" />
+                    <font-awesome-icon v-else icon="fa-solid fa-eye-slash" />
+                </div>
+            </div>
+        </div>
       </div>
       <button type="submit" class="btn btn-success">Login</button>
       <div>
