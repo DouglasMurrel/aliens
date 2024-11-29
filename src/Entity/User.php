@@ -38,6 +38,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'array')]
     private $roles;
 
+    #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
+    private ?Order $userOrder = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -142,5 +145,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getUserIdentifier(): string
     {
         return $this->email;
+    }
+
+    public function getUserOrder(): ?Order
+    {
+        return $this->userOrder;
+    }
+
+    public function setUserOrder(Order $userOrder): static
+    {
+        // set the owning side of the relation if necessary
+        if ($userOrder->getUser() !== $this) {
+            $userOrder->setUser($this);
+        }
+
+        $this->userOrder = $userOrder;
+
+        return $this;
     }
 }
