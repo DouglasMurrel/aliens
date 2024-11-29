@@ -6,6 +6,7 @@ use App\Repository\OrderCanRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: OrderCanRepository::class)]
 class OrderCan
@@ -15,6 +16,7 @@ class OrderCan
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Groups(["userinfo"])]
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 

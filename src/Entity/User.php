@@ -38,6 +38,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'array')]
     private $roles;
 
+    #[Groups(["userinfo"])]
     #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
     private ?Order $userOrder = null;
 

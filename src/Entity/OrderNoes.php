@@ -6,6 +6,7 @@ use App\Repository\OrderNoesRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: OrderNoesRepository::class)]
 class OrderNoes
@@ -15,6 +16,7 @@ class OrderNoes
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Groups(["userinfo"])]
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 

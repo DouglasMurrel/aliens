@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: OrderRepository::class)]
 #[ORM\Table(name: '`order`')]
@@ -21,24 +22,31 @@ class Order
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
+    #[Groups(["userinfo"])]
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
+    #[Groups(["userinfo"])]
     #[ORM\Column(type: Types::TEXT)]
     private ?string $medical = null;
 
+    #[Groups(["userinfo"])]
     #[ORM\Column(type: Types::TEXT)]
     private ?string $psycological = null;
 
+    #[Groups(["userinfo"])]
     #[ORM\Column(type: Types::TEXT)]
     private ?string $food = null;
 
+    #[Groups(["userinfo"])]
     #[ORM\Column(type: Types::TEXT)]
     private ?string $comment = null;
 
+    #[Groups(["userinfo"])]
     #[ORM\Column(type: Types::TEXT)]
     private ?string $additional = null;
 
+    #[Groups(["userinfo"])]
     #[ORM\Column(type: Types::SMALLINT)]
     private ?int $school = null;
 
