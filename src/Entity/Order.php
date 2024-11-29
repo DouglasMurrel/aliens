@@ -23,10 +23,6 @@ class Order
     private ?User $user = null;
 
     #[Groups(["userinfo"])]
-    #[ORM\Column(length: 255)]
-    private ?string $name = null;
-
-    #[Groups(["userinfo"])]
     #[ORM\Column(type: Types::TEXT)]
     private ?string $medical = null;
 
@@ -67,6 +63,9 @@ class Order
      */
     #[ORM\ManyToMany(targetEntity: OrderNoes::class, mappedBy: 'userOrder')]
     private Collection $orderNoes;
+
+    #[ORM\Column(type: Types::TEXT)]
+    private ?string $contact = null;
 
     public function __construct()
     {
@@ -253,6 +252,18 @@ class Order
         if ($this->orderNoes->removeElement($orderNo)) {
             $orderNo->removeUserOrder($this);
         }
+
+        return $this;
+    }
+
+    public function getContact(): ?string
+    {
+        return $this->contact;
+    }
+
+    public function setContact(string $contact): static
+    {
+        $this->contact = $contact;
 
         return $this;
     }

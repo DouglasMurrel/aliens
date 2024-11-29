@@ -3,6 +3,9 @@
 namespace App\Service;
 
 use App\Entity\User;
+use App\Entity\OrderCan;
+use App\Entity\OrderWant;
+use App\Entity\OrderNoes;
 use Symfony\Component\Serializer\SerializerInterface;
 use App\VK\Provider\User as VkUser;
 use App\Http\Request\SignUpRequest;
@@ -69,5 +72,35 @@ class UserInfo {
             $pieces []= $keyspace[random_int(0, $max)];
         }
         return implode('', $pieces);
+    }
+    
+    public function getOrdersHeplerCan(){
+        $helper = $this->entityManager->getRepository(OrderCan::class)->findAll();
+        $json = $this->serializer->serialize(
+            $helper,
+            'json', 
+            ['groups' => 'userinfo']
+        );
+        return $json;
+    }
+    
+    public function getOrdersHeplerWant(){
+        $helper = $this->entityManager->getRepository(OrderWant::class)->findAll();
+        $json = $this->serializer->serialize(
+            $helper,
+            'json', 
+            ['groups' => 'userinfo']
+        );
+        return $json;
+    }
+    
+    public function getOrdersHeplerNoes(){
+        $helper = $this->entityManager->getRepository(OrderNoes::class)->findAll();
+        $json = $this->serializer->serialize(
+            $helper,
+            'json', 
+            ['groups' => 'userinfo']
+        );
+        return $json;
     }
 }

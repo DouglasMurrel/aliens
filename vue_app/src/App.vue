@@ -1,19 +1,18 @@
 <template>
   <div class="fullHeight" :class="{wait: ajaxWaiting}">
-    <h1>Hello App!</h1>
-    <p>
-      <strong>Current route path:</strong> {{ $route.fullPath }}
-    </p>
-    <nav v-if="loggedIn && !ajaxWaiting">
-      {{ userData.fullname }}
-    </nav>
-    <nav v-else-if="!ajaxWaiting">
-      <RouterLink to="/signup">Sign Up</RouterLink>
-      <RouterLink to="/signin">Sign In</RouterLink>
-    </nav>
-    <main>
-      <RouterView />
-    </main>
+    <div class="container">
+      <nav v-if="loggedIn && !ajaxWaiting">
+        {{ userData.fullname }}
+        <a v-if="loggedIn" href='' @click.prevent="logout">Logout</a>
+      </nav>
+      <nav v-else-if="!ajaxWaiting">
+        <RouterLink to="/signup">Sign Up</RouterLink>
+        <RouterLink to="/signin">Sign In</RouterLink>
+      </nav>
+      <main>
+        <RouterView />
+      </main>
+    </div>
   </div>
 </template>
 
@@ -29,6 +28,24 @@ export default {
             },
             ajaxWaiting () {
                 return this.$store.state.ajaxWaiting
+            }
+        },
+        methods: {
+            logout: function(event){
+                localStorage.removeItem('authToken');
+                localStorage.removeItem('refreshToken');
+                this.$store.commit('loggedIn', false);
+                component.$store.commit('ajaxWaiting', true);
+                let component = this;
+                axios.create().post(API_URL + '/logout',{}).then(function (response) {
+                    if(response.status === 200) {
+                        component.$store.commit('loggedIn', false);
+                        component.$store.commit('ajaxWaiting', false);
+                        component.$store.commit('setData',{});
+                    }
+                }).catch(function (error) {
+                    component.$store.commit('ajaxWaiting', false);
+                });
             }
         },
         beforeCreate() {

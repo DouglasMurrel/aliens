@@ -41,6 +41,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(["userinfo"])]
     #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
     private ?Order $userOrder = null;
+    
+    #[Groups(["userinfo"])]
+    private $fullOrderCant;
+    #[Groups(["userinfo"])]
+    private $fullOrderWant;
+    #[Groups(["userinfo"])]
+    private $fullOrderNoes;
 
     public function getId(): ?int
     {

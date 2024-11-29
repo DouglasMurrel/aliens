@@ -94,10 +94,16 @@ class UserController extends AbstractController
                 'message' => 'missing credentials for userinfo',
             ], Response::HTTP_UNAUTHORIZED);
         }
+        
+        $hellers = [];
+        $helpers['orderCan'] = $this->userInfo->getOrdersHeplerCan();
+        $helpers['orderWant'] = $this->userInfo->getOrdersHeplerWant();
+        $helpers['orderNoes'] = $this->userInfo->getOrdersHeplerNoes();
 
         return $this->json([
             'user'  => $user->getUserIdentifier(),
-            'userData' => $this->userInfo->getUserInfo($user)
+            'userData' => $this->userInfo->getUserInfo($user),
+            'helpers' => $helpers
         ]);
     }
     

@@ -1,46 +1,41 @@
 <template>
-  <div class="container">
-    <h1>Sign In Form</h1>
-
-    <div class="alert alert-success" role="alert" v-if="loggedIn">
-      <div>Congratulations! You successfully signed in as {{ userEmail }}</div>
-      <div>{{ userData }}</div>
-      <a href='' @click.prevent="logout">Logout</a>
-    </div>
-
-    <h2 v-if="ajaxWaiting">Loading, please wait...</h2>
-    <form method="post" v-on:submit.prevent="submitForm" v-if="!loggedIn && loaded">
-      <small class="form-text text-danger" v-if="validationErrors.password">
-        {{ validationErrors.password }}
-      </small>
-      <div class="form-group">
-        <label for="email">Email address</label>
-        <input type="email" class="form-control" id="email" v-model="email" aria-describedby="emailHelp" placeholder="Enter email">
-      </div>
-      <div class="form-group">
-        <label for="password">Password</label>
-        <div class="input-group mr-sm-2">
-            <input :type="showPass ? 'text' : 'password'" class="form-control" autocomplete="off" id="password" v-model="password" placeholder="Password">
-            <div class="input-group-prepend">
-                <div class="input-group-text" role="button" @click="showPass=!showPass">
-                    <font-awesome-icon v-if="showPass" icon="fa-solid fa-eye" />
-                    <font-awesome-icon v-else icon="fa-solid fa-eye-slash" />
-                </div>
-            </div>
-        </div>
-      </div>
-      <button type="submit" class="btn btn-success">Login</button>
-      <div>
-        <a href="" v-if="1==0" @click.prevent="vkLogin">or login through VK account</a>
-        <a :href="vkLoginUrl">or login through VK account</a>
-      </div>
-    </form>
+  <div v-if="loggedIn">
+    <Order />
   </div>
+
+  <h2 v-if="ajaxWaiting">Loading, please wait...</h2>
+  <form method="post" v-on:submit.prevent="submitForm" v-if="!loggedIn && loaded">
+    <h1>Sign In Form</h1>
+    <small class="form-text text-danger" v-if="validationErrors.password">
+      {{ validationErrors.password }}
+    </small>
+    <div class="form-group">
+      <label for="email">Email address</label>
+      <input type="email" class="form-control" id="email" v-model="email" aria-describedby="emailHelp" placeholder="Enter email">
+    </div>
+    <div class="form-group">
+      <label for="password">Password</label>
+      <div class="input-group mr-sm-2">
+          <input :type="showPass ? 'text' : 'password'" class="form-control" autocomplete="off" id="password" v-model="password" placeholder="Password">
+          <div class="input-group-prepend">
+              <div class="input-group-text" role="button" @click="showPass=!showPass">
+                  <font-awesome-icon v-if="showPass" icon="fa-solid fa-eye" />
+                  <font-awesome-icon v-else icon="fa-solid fa-eye-slash" />
+              </div>
+          </div>
+      </div>
+    </div>
+    <button type="submit" class="btn btn-success">Login</button>
+    <div>
+      <a :href="vkLoginUrl">or login through VK account</a>
+    </div>
+  </form>
 </template>
 
 <script>
     import axios from 'axios'
     import {API_URL, VK_LOGIN_URL} from '../config.local'
+    import Order from '../components/Order.vue'
 
     export default {
         name: 'SignUpForm',
@@ -88,6 +83,7 @@
                     component.validationErrors = {};
                     component.userEmail = response.data.user;
                     component.$store.commit('setData',JSON.parse(response.data.userData));
+                    component.$store.commit('setHelpers',JSON.parse(response.data.helpers));
                     const token = response.data.token;
                     localStorage.setItem('authToken', token);
                     const refresh_token = response.data.refresh_token;
@@ -99,24 +95,6 @@
                       component.$store.commit('ajaxWaiting', false);
                     }
 //                    console.log(error.response);
-                    component.$store.commit('ajaxWaiting', false);
-                    component.password = '';
-                });
-            },
-            logout: function(event){
-                localStorage.removeItem('authToken');
-                localStorage.removeItem('refreshToken');
-                this.$store.commit('loggedIn', false);
-                component.$store.commit('ajaxWaiting', true);
-                let component = this;
-                axios.create().post(API_URL + '/logout',{}).then(function (response) {
-                    if(response.status === 200) {
-                        component.$store.commit('loggedIn', false);
-                        component.$store.commit('ajaxWaiting', false);
-                        component.password = '';
-                        component.$store.commit('setData',{});
-                    }
-                }).catch(function (error) {
                     component.$store.commit('ajaxWaiting', false);
                     component.password = '';
                 });
@@ -134,6 +112,7 @@
                     component.validationErrors = {};
                     component.userEmail = response.data.user;
                     component.$store.commit('setData',JSON.parse(response.data.userData));
+                    component.$store.commit('setHelpers',JSON.parse(response.data.helpers));
                     const token = response.data.token;
                     localStorage.setItem('authToken', token);
                     const refresh_token = response.data.refresh_token;
@@ -163,6 +142,7 @@
                         component.$store.commit('loggedIn', true);
                         component.userEmail = response.data.user;
                         component.$store.commit('setData',JSON.parse(response.data.userData));
+                        component.$store.commit('setHelpers',JSON.parse(response.data.helpers));
                         component.$store.commit('ajaxWaiting', false);
                         component.loaded = true;
                     }
@@ -175,6 +155,7 @@
                                 component.validationErrors = {};
                                 component.userEmail = response.data.user;
                                 component.$store.commit('setData',JSON.parse(response.data.userData));
+                                component.$store.commit('setHelpers',JSON.parse(response.data.helpers));
                                 const token = response.data.token;
                                 localStorage.setItem('authToken', token);
                                 const refresh_token = response.data.refresh_token;
@@ -196,6 +177,9 @@
             } else {
                 this.$store.commit('ajaxWaiting', false);
             }
+        },
+        components: {
+            Order
         }
     }
 </script>
