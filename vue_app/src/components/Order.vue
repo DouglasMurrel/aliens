@@ -148,7 +148,7 @@ export default {
 <template>
     <form @submit.prevent="submit">
         <div class="form-group mb-2">
-            <label for="contact">Способы связи</label>
+            <label for="contact">Способы связи (email, ВК, телеграм и т.д.)</label>
             <textarea class="form-control" id="contact" v-model="userOrder.contact"></textarea>
         </div>
         <div class="form-group mb-2">
