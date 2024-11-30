@@ -112,7 +112,7 @@ export default {
                                     'Authorization': 'Bearer ' + component.authToken,
                                 }
                             }
-                            axios.create().post(API_URL + '/order', this.userOrder, axiosConfig).then(function (response) {
+                            axios.create().post(API_URL + '/order', component.userOrder, axiosConfig).then(function (response) {
                                 if(response.status === 200) {
                                     component.$store.commit('ajaxWaiting', false);
                                     component.dataSent = true;

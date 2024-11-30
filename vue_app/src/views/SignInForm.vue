@@ -1,20 +1,20 @@
 <template>
+  <h2 v-if="ajaxWaiting">Идет загрузка. Подождите, пожалуйста...</h2>
   <div v-if="loggedIn">
     <Order />
   </div>
 
-  <h2 v-if="ajaxWaiting">Loading, please wait...</h2>
   <form method="post" v-on:submit.prevent="submitForm" v-if="!loggedIn && loaded">
     <h1>Sign In Form</h1>
     <small class="form-text text-danger" v-if="validationErrors.password">
       {{ validationErrors.password }}
     </small>
     <div class="form-group">
-      <label for="email">Email address</label>
+      <label for="email">Email-адрес</label>
       <input type="email" class="form-control" id="email" v-model="email" aria-describedby="emailHelp" placeholder="Enter email">
     </div>
     <div class="form-group">
-      <label for="password">Password</label>
+      <label for="password">Пароль</label>
       <div class="input-group mr-sm-2">
           <input :type="showPass ? 'text' : 'password'" class="form-control" autocomplete="off" id="password" v-model="password" placeholder="Password">
           <div class="input-group-prepend">
@@ -25,9 +25,9 @@
           </div>
       </div>
     </div>
-    <button type="submit" class="btn btn-success">Login</button>
+    <button type="submit" class="btn btn-success">Войти</button>
     <div>
-      <a :href="vkLoginUrl">or login through VK account</a>
+      <a :href="vkLoginUrl">или войти через ВКонтакте</a>
     </div>
   </form>
 </template>

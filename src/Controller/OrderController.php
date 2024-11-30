@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Entity\Order;
 use App\Entity\OrderWant;
 use App\Entity\OrderNoes;
+use App\Event\NewOrderEvent;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -25,14 +26,17 @@ use Psr\Log\LoggerInterface;
 class OrderController extends AbstractController{
     
     private $entityManager;
+    protected $dispatcher;
     private $logger;
     
     public function __construct(
         EntityManagerInterface $entityManager,
+        EventDispatcherInterface $dispatcher,
         LoggerInterface $logger
     )
     {
         $this->entityManager = $entityManager;
+        $this->dispatcher = $dispatcher;
         $this->logger = $logger;
     }
     
@@ -82,6 +86,9 @@ class OrderController extends AbstractController{
         $this->entityManager->refresh($user);
         $this->entityManager->persist($order);
         $this->entityManager->flush();
+        
+        $event = new NewOrderEvent($order);
+        $this->dispatcher->dispatch($event);
 
         return $this->json($data);
     }

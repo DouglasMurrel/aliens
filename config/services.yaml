@@ -39,6 +39,11 @@ services:
         tags:
             - { name: kernel.event_listener, event: lexik_jwt_authentication.on_authentication_success, method: beforeRefreshToken, priority: 1024 }     
             
+    aliens.event.new_order_mail_listener:
+        class: App\EventListener\NewOrderMailListener
+        tags:
+            - { name: kernel.event_listener, event: App\Event\NewOrderEvent, method: sendOrderEmail }     
+            
     App\Security\VKAuthenticator:
         arguments:
             $returnUrl: '%env(resolve:RETURN_URL)%'       

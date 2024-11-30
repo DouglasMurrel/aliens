@@ -3,11 +3,11 @@
     <div class="container">
       <nav v-if="loggedIn && !ajaxWaiting">
         {{ userData.fullname }}
-        <a v-if="loggedIn" href='' @click.prevent="logout">Logout</a>
+        <a v-if="loggedIn" href='' @click.prevent="logout">Выйти</a>
       </nav>
       <nav v-else-if="!ajaxWaiting">
-        <RouterLink to="/signup">Sign Up</RouterLink>
-        <RouterLink to="/signin">Sign In</RouterLink>
+        <RouterLink to="/signup">Регистрация</RouterLink>
+        <RouterLink to="/signin">Вход</RouterLink>
       </nav>
       <main>
         <RouterView />

@@ -1,30 +1,30 @@
 <template>
-  <h1>Sign Up Form</h1>
+  <h1>Регистрация</h1>
 
   <div class="alert alert-success" role="alert" v-if="formSubmittedSuccess">
-    Congratulations! You account registered successfully. You can <RouterLink to="/signin">Sign In</RouterLink> now
+    Ура! Вы зарегистрировались. Теперь можно <RouterLink to="/signin">входить в систему</RouterLink>
   </div>
 
   <form method="post" v-on:submit.prevent="submitForm" v-else>
-    <h2 v-if="ajaxWaiting">Loading, please wait...</h2>
+    <h2 v-if="ajaxWaiting">Идет загрузка. Подождите, пожалуйста...</h2>
     <div class="form-group">
-      <label for="fullname">Fullname</label>
-      <input type="text" class="form-control" id="fullname" v-model="fullname" placeholder="Enter your name">
+      <label for="fullname">Имя</label>
+      <input type="text" class="form-control" id="fullname" v-model="fullname">
       <small class="form-text text-danger" v-if="validationErrors.fullname">
         {{ validationErrors.fullname }}
       </small>
     </div>
     <div class="form-group">
-      <label for="email">Email address</label>
-      <input type="email" class="form-control" id="email" v-model="email" aria-describedby="emailHelp" placeholder="Enter email">
+      <label for="email">Email-адрес</label>
+      <input type="email" class="form-control" id="email" v-model="email" aria-describedby="emailHelp">
       <small class="form-text text-danger" v-if="validationErrors.email">
         {{ validationErrors.email }}
       </small>
     </div>
     <div class="form-group">
-      <label for="password">Password</label>
+      <label for="password">Пароль</label>
       <div class="input-group mr-sm-2">
-          <input :type="showPass ? 'text' : 'password'" class="form-control" autocomplete="off" id="password" v-model="password" placeholder="Password">
+          <input :type="showPass ? 'text' : 'password'" class="form-control" autocomplete="off" id="password" v-model="password">
           <div class="input-group-prepend">
               <div class="input-group-text" role="button" @click="showPass=!showPass">
                   <font-awesome-icon v-if="showPass" icon="fa-solid fa-eye" />
@@ -37,9 +37,9 @@
        </small>
     </div>
     <div class="form-group">
-      <label for="password1">Repeat password</label>
+      <label for="password1">Повторить пароль</label>
       <div class="input-group mr-sm-2">
-          <input :type="showPass1 ? 'text' : 'password'" class="form-control" autocomplete="off" v-model="password1" placeholder="Repeat password">
+          <input :type="showPass1 ? 'text' : 'password'" class="form-control" autocomplete="off" v-model="password1">
           <div class="input-group-prepend">
               <div class="input-group-text" role="button" @click.prevent="showPass1=!showPass1">
                   <font-awesome-icon v-if="showPass1" icon="fa-solid fa-eye" />
@@ -48,7 +48,7 @@
           </div>
       </div>
     </div>
-    <button type="submit" class="btn btn-success">Register</button>
+    <button type="submit" class="btn btn-success">Отправить</button>
   </form>
 </template>
 
