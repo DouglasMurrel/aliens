@@ -49,18 +49,21 @@ class Order
     /**
      * @var Collection<int, OrderWant>
      */
+    #[Groups(["userinfo"])]
     #[ORM\ManyToMany(targetEntity: OrderWant::class, mappedBy: 'userOrder')]
     private Collection $orderWants;
 
     /**
      * @var Collection<int, OrderCan>
      */
+    #[Groups(["userinfo"])]
     #[ORM\ManyToMany(targetEntity: OrderCan::class, mappedBy: 'userOrder')]
     private Collection $orderCans;
 
     /**
      * @var Collection<int, OrderNoes>
      */
+    #[Groups(["userinfo"])]
     #[ORM\ManyToMany(targetEntity: OrderNoes::class, mappedBy: 'userOrder')]
     private Collection $orderNoes;
 
@@ -87,18 +90,6 @@ class Order
     public function setUser(User $user): static
     {
         $this->user = $user;
-
-        return $this;
-    }
-
-    public function getName(): ?string
-    {
-        return $this->name;
-    }
-
-    public function setName(string $name): static
-    {
-        $this->name = $name;
 
         return $this;
     }

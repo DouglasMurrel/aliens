@@ -17,6 +17,9 @@
 </template>
 
 <script>
+import axios from 'axios'
+import {API_URL} from './config.local'
+
 export default {
         name: 'App',
         computed: {
@@ -35,7 +38,7 @@ export default {
                 localStorage.removeItem('authToken');
                 localStorage.removeItem('refreshToken');
                 this.$store.commit('loggedIn', false);
-                component.$store.commit('ajaxWaiting', true);
+                this.$store.commit('ajaxWaiting', true);
                 let component = this;
                 axios.create().post(API_URL + '/logout',{}).then(function (response) {
                     if(response.status === 200) {
@@ -67,5 +70,9 @@ export default {
  }
  .wait {
     cursor: wait;
+ }
+ .border-bottom-dashed {
+    border-bottom: 1px dashed;
+    display: inline-block;
  }
 </style>

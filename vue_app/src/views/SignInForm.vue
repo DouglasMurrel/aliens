@@ -163,6 +163,7 @@
                                 component.$store.commit('ajaxWaiting', false);
                                 component.$store.commit('loggedIn', true);
                                 component.loaded = true;
+                                window.location.reload();
                             }   
                         }).catch(function (error) {
                             component.$store.commit('ajaxWaiting', false);

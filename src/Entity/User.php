@@ -43,8 +43,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?Order $userOrder = null;
     
     #[Groups(["userinfo"])]
-    private $fullOrderCant;
-    #[Groups(["userinfo"])]
     private $fullOrderWant;
     #[Groups(["userinfo"])]
     private $fullOrderNoes;

@@ -95,15 +95,10 @@ class UserController extends AbstractController
             ], Response::HTTP_UNAUTHORIZED);
         }
         
-        $hellers = [];
-        $helpers['orderCan'] = $this->userInfo->getOrdersHeplerCan();
-        $helpers['orderWant'] = $this->userInfo->getOrdersHeplerWant();
-        $helpers['orderNoes'] = $this->userInfo->getOrdersHeplerNoes();
-
         return $this->json([
             'user'  => $user->getUserIdentifier(),
             'userData' => $this->userInfo->getUserInfo($user),
-            'helpers' => $helpers
+            'helpers' => $this->userInfo->getHelpers()
         ]);
     }
     

@@ -74,33 +74,27 @@ class UserInfo {
         return implode('', $pieces);
     }
     
-    public function getOrdersHeplerCan(){
-        $helper = $this->entityManager->getRepository(OrderCan::class)->findAll();
-        $json = $this->serializer->serialize(
-            $helper,
-            'json', 
-            ['groups' => 'userinfo']
-        );
-        return $json;
+    private function getOrdersHeplerCan(){
+        return $this->entityManager->getRepository(OrderCan::class)->findAll();
     }
     
-    public function getOrdersHeplerWant(){
-        $helper = $this->entityManager->getRepository(OrderWant::class)->findAll();
-        $json = $this->serializer->serialize(
-            $helper,
-            'json', 
-            ['groups' => 'userinfo']
-        );
-        return $json;
+    private function getOrdersHeplerWant(){
+        return $this->entityManager->getRepository(OrderWant::class)->findAll();
     }
     
-    public function getOrdersHeplerNoes(){
-        $helper = $this->entityManager->getRepository(OrderNoes::class)->findAll();
-        $json = $this->serializer->serialize(
-            $helper,
+    private function getOrdersHeplerNoes(){
+        return $this->entityManager->getRepository(OrderNoes::class)->findAll();
+    }
+    
+    public function getHelpers() {
+        $helpers = [];
+        $helpers['orderCan'] = $this->getOrdersHeplerCan();
+        $helpers['orderWant'] = $this->getOrdersHeplerWant();
+        $helpers['orderNoes'] = $this->getOrdersHeplerNoes();
+        return $this->serializer->serialize(
+            $helpers,
             'json', 
             ['groups' => 'userinfo']
         );
-        return $json;
     }
 }

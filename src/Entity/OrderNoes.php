@@ -14,6 +14,7 @@ class OrderNoes
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(["userinfo"])]
     private ?int $id = null;
 
     #[Groups(["userinfo"])]

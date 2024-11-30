@@ -17,6 +17,7 @@ const store = createStore({
   state () {
     return {
         userData: {},
+        helpers: {},
         loggedIn: false,
         ajaxWaiting: false
     };
@@ -24,6 +25,9 @@ const store = createStore({
   mutations: {
     setData (state, object) {
       state.userData = object;
+    },
+    setHelpers (state, object) {
+      state.helpers = object;
     },
     loggedIn (state, flag) {
       state.loggedIn = flag;
