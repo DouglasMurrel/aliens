@@ -6,7 +6,7 @@
         <a v-if="loggedIn" href='' @click.prevent="logout">Выйти</a>
       </nav>
       <nav v-else-if="!ajaxWaiting">
-        <RouterLink to="/signup">Регистрация</RouterLink>
+        <RouterLink to="/signup" class="me-2">Регистрация</RouterLink>
         <RouterLink to="/signin">Вход</RouterLink>
       </nav>
       <main>

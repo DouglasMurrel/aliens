@@ -5,18 +5,18 @@
   </div>
 
   <form method="post" v-on:submit.prevent="submitForm" v-if="!loggedIn && loaded">
-    <h1>Sign In Form</h1>
+    <h1>Вход</h1>
     <small class="form-text text-danger" v-if="validationErrors.password">
       {{ validationErrors.password }}
     </small>
     <div class="form-group">
       <label for="email">Email-адрес</label>
-      <input type="email" class="form-control" id="email" v-model="email" aria-describedby="emailHelp" placeholder="Enter email">
+      <input type="email" class="form-control" id="email" v-model="email" aria-describedby="emailHelp">
     </div>
     <div class="form-group">
       <label for="password">Пароль</label>
       <div class="input-group mr-sm-2">
-          <input :type="showPass ? 'text' : 'password'" class="form-control" autocomplete="off" id="password" v-model="password" placeholder="Password">
+          <input :type="showPass ? 'text' : 'password'" class="form-control" autocomplete="off" id="password" v-model="password">
           <div class="input-group-prepend">
               <div class="input-group-text" role="button" @click="showPass=!showPass">
                   <font-awesome-icon v-if="showPass" icon="fa-solid fa-eye" />
@@ -27,7 +27,10 @@
     </div>
     <button type="submit" class="btn btn-success">Войти</button>
     <div>
-      <a :href="vkLoginUrl">или войти через ВКонтакте</a>
+      или войти с использованием сервисов<br>
+      <a :href="vkLoginUrl">
+        <font-awesome-icon icon="fa-brands fa-vk" style='font-size:36px;color:blue;' />
+      </a>
     </div>
   </form>
 </template>
