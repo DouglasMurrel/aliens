@@ -164,7 +164,7 @@ export default {
             <textarea class="form-control" id="food" v-model="userOrder.food"></textarea>
         </div>
 
-        <div class="mb-2">В какой школе может учиться ваш персонаж?
+        <div class="mb-2">В какой школе может учиться или преподавать ваш персонаж?
             <div class="form-group">
                 <input type="radio" name="school" class="form-check-radio" id="school1" v-model="userOrder.school" value=1>
                 <label class="form-check-label ms-2" for="school1">В новой</label>
