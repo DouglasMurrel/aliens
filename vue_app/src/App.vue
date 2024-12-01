@@ -16,6 +16,7 @@
         <RouterView />
       </main>
     </div>
+    <div class="container"></div>
   </div>
 </template>
 

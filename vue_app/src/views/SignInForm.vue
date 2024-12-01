@@ -116,9 +116,9 @@
                     component.userEmail = response.data.user;
                     component.$store.commit('setData',JSON.parse(response.data.userData));
                     component.$store.commit('setHelpers',JSON.parse(response.data.helpers));
-                    const token = response.data.token;
+                    let token = response.data.token;
                     localStorage.setItem('authToken', token);
-                    const refresh_token = response.data.refresh_token;
+                    let refresh_token = response.data.refresh_token;
                     localStorage.setItem('refreshToken', refresh_token);
                 }).catch(function (error) {
                     if(error.response.data.code === 401 && error.response.data.message === 'Недействительные аутентификационные данные.'){
@@ -133,7 +133,7 @@
         beforeMount() {
             if (this.authToken) {
                 let component = this;
-                const axiosConfig = {
+                let axiosConfig = {
                     headers: {
                         'Authorization': 'Bearer ' + this.authToken,
                     }
@@ -156,17 +156,32 @@
                         axios.create().post(API_URL + '/token_refresh', {'refresh_token':component.refreshToken}).then(function (response) {
                             if(response.status === 200){
                                 component.validationErrors = {};
-                                component.userEmail = response.data.user;
-                                component.$store.commit('setData',JSON.parse(response.data.userData));
-                                component.$store.commit('setHelpers',JSON.parse(response.data.helpers));
-                                const token = response.data.token;
+                                let token = response.data.token;
                                 localStorage.setItem('authToken', token);
-                                const refresh_token = response.data.refresh_token;
+                                let refresh_token = response.data.refresh_token;
                                 localStorage.setItem('refreshToken', refresh_token);
-                                component.$store.commit('ajaxWaiting', false);
-//                                component.$store.commit('loggedIn', true);
-//                                component.loaded = true;
-                                window.location.reload();
+
+                                let axiosConfig = {
+                                    headers: {
+                                        'Authorization': 'Bearer ' + token,
+                                    }
+                                }
+                                axios.create().post(API_URL + '/userinfo',{},axiosConfig).then(function (response) {
+                                    if(response.status === 200) {
+                                        component.$store.commit('loggedIn', true);
+                                        component.userEmail = response.data.user;
+                                        component.$store.commit('setData',JSON.parse(response.data.userData));
+                                        component.$store.commit('setHelpers',JSON.parse(response.data.helpers));
+                                        component.$store.commit('ajaxWaiting', false);
+                                        component.loaded = true;
+                                    }
+                                }).catch(function (error) {
+                                    component.$store.commit('ajaxWaiting', false);
+                                    component.$store.commit('loggedIn', faalse);
+                                    localStorage.removeItem('authToken');
+                                    localStorage.removeItem('refreshToken');
+                                    component.loaded = true;
+                                })
                             }   
                         }).catch(function (error) {
                             component.$store.commit('ajaxWaiting', false);
