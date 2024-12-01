@@ -27,7 +27,7 @@
     </div>
     <button type="submit" class="btn btn-success">Войти</button>
     <div>
-      или войти с использованием сервисов<br>
+      или войдите с использованием сервисов<br>
       <a :href="vkLoginUrl">
         <font-awesome-icon icon="fa-brands fa-vk" style='font-size:36px;color:blue;' />
       </a>
