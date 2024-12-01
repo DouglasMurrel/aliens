@@ -180,7 +180,8 @@ export default {
         </div>
 
         <div>Какие из этих типажей вам хотелось бы сыграть? Можно выбрать несколько
-            <span role="button" :class="(wantsHidden?'mb-2 ':'') + 'border-bottom-dashed'" v-html="wantsHidden?'Показать список типажей':'Спрятать список типажей'" @click="wantsHidden=!wantsHidden"></span>
+            <span role="button" class="border-bottom-dashed" v-html="wantsHidden?'Показать список типажей':'Спрятать список типажей'" @click="wantsHidden=!wantsHidden"></span>
+            <div class="mb-2">(если вам интересны типажи, которых в списке нет, не расстраивайтесь! просто напишите о них в поле ниже)</div>
         </div>
         <div class="form-group mb-2" v-for="item in helpers.orderWant" :key="item.id" v-if="!wantsHidden">
             <input class="form-check-input" type="checkbox" :id="'orderWant' + item.id" v-model="orderWants" :value="item.id" />
