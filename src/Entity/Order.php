@@ -258,4 +258,23 @@ class Order
 
         return $this;
     }
+    
+    public function __toString(): string {
+        $schoolString = '';
+        if ($this->school == 1) $schoolString = 'Новая';
+        if ($this->school == 2) $schoolString = 'Старая';
+        if ($this->school == 3) $schoolString = 'Неважно';
+        return "Email: " . $this->user->getEmail()
+                . "\nИмя: " . $this->user->getFullname()
+                . "\nСпособы связи: " . $this->contact
+                . "\nМедицинские противопоказания: " . $this->medical
+                . "\nПсихологические противопоказания: " . $this->psycological
+                . "\nПищевые ограничения: " . $this->food
+                . "\nШкола: " . $schoolString
+                . "\nХочет типажи: " . implode(",\n",$this->orderWants->toArray())
+                . "\nНе хочет типажи: " . implode(",\n",$this->orderNoes->toArray())
+                . "\nЕще о персонаже: " . $this->comment
+                . "\nДополнение: " . $this->additional
+                ;
+    }
 }

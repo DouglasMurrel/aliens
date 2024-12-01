@@ -51,7 +51,6 @@ class OrderController extends AbstractController{
         
         $data = json_decode($request->getContent(),true);
         
-        $this->logger->info(print_r($data,1));
         $order = $user->getUserOrder();
         if ($order == null) {
             $order = new Order();
@@ -83,7 +82,6 @@ class OrderController extends AbstractController{
                 if ($orderNoesObject)$order->addOrderNo($orderNoesObject);
             }
         }
-        $this->entityManager->refresh($user);
         $this->entityManager->persist($order);
         $this->entityManager->flush();
         
