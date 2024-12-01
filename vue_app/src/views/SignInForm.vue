@@ -93,8 +93,8 @@
                     localStorage.setItem('refreshToken', refresh_token);
                     component.password = '';
                 }).catch(function (error) {
-                    if(error.response.data.code === 401 && error.response.data.message === 'Invalid credentials.'){
-                      component.validationErrors = {'password': 'Wrong email or password'};
+                    if(error.response.data.code === 401 && error.response.data.message === 'Недействительные аутентификационные данные.'){
+                      component.validationErrors = {'password': 'Неверный пароль'};
                       component.$store.commit('ajaxWaiting', false);
                     }
 //                    console.log(error.response);
@@ -121,8 +121,8 @@
                     const refresh_token = response.data.refresh_token;
                     localStorage.setItem('refreshToken', refresh_token);
                 }).catch(function (error) {
-                    if(error.response.data.code === 401 && error.response.data.message === 'Invalid credentials.'){
-                      component.validationErrors = {'password': 'Wrong email or password'};
+                    if(error.response.data.code === 401 && error.response.data.message === 'Недействительные аутентификационные данные.'){
+                      component.validationErrors = {'password': 'Неверный пароль'};
                       component.$store.commit('ajaxWaiting', false);
                     }
 //                    console.log(error.response);
@@ -164,8 +164,8 @@
                                 const refresh_token = response.data.refresh_token;
                                 localStorage.setItem('refreshToken', refresh_token);
                                 component.$store.commit('ajaxWaiting', false);
-                                component.$store.commit('loggedIn', true);
-                                component.loaded = true;
+//                                component.$store.commit('loggedIn', true);
+//                                component.loaded = true;
                                 window.location.reload();
                             }   
                         }).catch(function (error) {
