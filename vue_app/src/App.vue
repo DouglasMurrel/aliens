@@ -1,6 +1,9 @@
 <template>
   <div class="fullHeight" :class="{wait: ajaxWaiting}">
     <div class="container">
+        <img src='../img/Oferta-educativa-tec-de-mty.jpg'  style='height: 100%; width: 100%; object-fit: contain'>
+    </div>
+    <div class="container">
       <nav v-if="loggedIn && !ajaxWaiting">
         {{ userData.fullname }}
         <a v-if="loggedIn" href='' @click.prevent="logout">Выйти</a>
