@@ -67,6 +67,7 @@ class Order
     #[ORM\ManyToMany(targetEntity: OrderNoes::class, mappedBy: 'userOrder')]
     private Collection $orderNoes;
 
+    #[Groups(["userinfo"])]
     #[ORM\Column(type: Types::TEXT)]
     private ?string $contact = null;
 
