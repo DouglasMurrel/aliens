@@ -36,6 +36,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $salt;
     
     #[ORM\Column(type: 'array')]
+    #[Groups(["userinfo"])]
     private $roles;
 
     #[Groups(["userinfo"])]
