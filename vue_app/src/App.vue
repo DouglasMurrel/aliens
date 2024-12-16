@@ -5,7 +5,11 @@
     </div>
     <div class="container">
       <nav v-if="loggedIn && !ajaxWaiting">
-        {{ userData.fullname }}
+{{ this.$route.name }}
+{{ userData.roles.includes("ROLE_ADMIN") }}
+
+        <RouterLink to="/" class="me-1">{{ userData.fullname }}</RouterLink>
+        <RouterLink v-if="isAdmin" to="/admin/all-orders" class="me-1">Все заявки</RouterLink>
         <a v-if="loggedIn" href='' @click.prevent="logout">Выйти</a>
       </nav>
       <nav v-else-if="!ajaxWaiting">
@@ -35,6 +39,9 @@ export default {
             },
             ajaxWaiting () {
                 return this.$store.state.ajaxWaiting
+            },
+            isAdmin () {
+                return this.$store.state.userData.roles.includes("ROLE_ADMIN")
             }
         },
         methods: {
@@ -79,4 +86,7 @@ export default {
     border-bottom: 1px dashed;
     display: inline-block;
  }
+.color-grey {
+    color: grey;
+}
 </style>

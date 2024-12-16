@@ -1,13 +1,17 @@
-import { createMemoryHistory, createRouter } from 'vue-router'
+import { createWebHistory, createRouter } from 'vue-router'
 
 const routes = [
   { path: '/signup', name: 'signup', component: () => import('../views/SignUpForm.vue') },
-  { path: '/signin', name: 'signin', component: () => import('../views/SignInForm.vue'), alias: ['/', ''] }
+  { path: '/', name: 'signin', component: () => import('../views/SignInForm.vue') },
+  { path: '/signin', redirect:'/' },
+  { path: '/admin/all-orders', name: 'admin-all-orders', component: () => import('../views/SignInForm.vue') },
+  { path: '/:pathMatch(.*)*', name: 'NotFound', component:  () => import('../views/NotFound.vue') },
 ]
 
 const router = createRouter({
-  history: createMemoryHistory(),
-  routes
+    linkActiveClass: 'color-grey',
+    history: createWebHistory(),
+    routes
 });
 
 export default router

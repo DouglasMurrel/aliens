@@ -1,7 +1,8 @@
 <template>
   <h2 v-if="ajaxWaiting">Идет загрузка. Подождите, пожалуйста...</h2>
   <div v-if="loggedIn">
-    <Order />
+    <Order v-if="this.$route.name==='signin'" />
+    <AllOrders v-if="this.$route.name==='admin-all-orders'" />
   </div>
 
   <form method="post" v-on:submit.prevent="submitForm" v-if="!loggedIn && loaded">
@@ -39,6 +40,7 @@
     import axios from 'axios'
     import {API_URL, VK_LOGIN_URL} from '../config.local'
     import Order from '../components/Order.vue'
+    import AllOrders from '../components/AllOrders.vue'
 
     export default {
         name: 'SignUpForm',
@@ -198,7 +200,7 @@
             }
         },
         components: {
-            Order
+            Order, AllOrders
         }
     }
 </script>
