@@ -3,6 +3,11 @@ import axios from 'axios'
 import {API_URL} from '../config.local'
 
 export default {
+    computed: {
+        isAdmin () {
+            return this.$store.state.userData.roles.includes("ROLE_ADMIN")
+        }
+    },
     data() {
         return {
            authToken: localStorage.getItem('authToken'),
@@ -10,7 +15,7 @@ export default {
         }
     },
     mounted() {
-        if (this.authToken) {
+        if (this.authToken && this.isAdmin) {
             let component = this;
             let axiosConfig = {
                 headers: {
@@ -18,8 +23,9 @@ export default {
                 }
             }
             this.$store.commit('ajaxWaiting', true);
-            axios.create().post(API_URL + '/all-orders',{},axiosConfig).then(function (response) {
+            axios.create().post(API_URL + '/admin/all-orders',{},axiosConfig).then(function (response) {
                 if(response.status === 200) {
+                    console.log(JSON.parse(response.data));
                     component.$store.commit('ajaxWaiting', false);
                 }
             }).catch(function (error) {
@@ -33,5 +39,7 @@ export default {
 }
 </script>
 <template>
+<div v-if="isAdmin">
 aaaaaaaaaaaaaaa
+</div>
 </template>
