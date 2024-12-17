@@ -6,13 +6,16 @@ export default {
     computed: {
         isAdmin () {
             return this.$store.state.userData.roles.includes("ROLE_ADMIN")
+        },
+        ajaxWaiting () {
+            return this.$store.state.ajaxWaiting
         }
     },
     data() {
         return {
            authToken: localStorage.getItem('authToken'),
            refreshToken: localStorage.getItem('refreshToken'),
-           orders: []
+           food: ''
         }
     },
     mounted() {
@@ -24,9 +27,9 @@ export default {
                 }
             }
             this.$store.commit('ajaxWaiting', true);
-            axios.create().post(API_URL + '/admin/all-orders',{},axiosConfig).then(function (response) {
+            axios.create().post(API_URL + '/admin/food',{},axiosConfig).then(function (response) {
                 if(response.status === 200) {
-                    component.orders = JSON.parse(response.data);
+                    component.food = response.data;
                     component.$store.commit('ajaxWaiting', false);
                 }
             }).catch(function (error) {
@@ -40,18 +43,9 @@ export default {
 }
 </script>
 <template>
-<div v-if="isAdmin">
-    <div v-for="(order,k) in orders" style="border:1px solid;">
-        <div>{{ order.fullname }}, {{ order[0].contact }}</div>
-        <div>Хочет:
-            <div v-for="want in order[0].orderWants" class="ms-3">{{ want.name }}</div>
-        </div>
-        <div>Не хочет:
-            <div v-for="no in order[0].orderNoes" class="ms-3">{{ no.name }}</div>
-        </div>
-        <div>{{ order[0].comment }}</div>
-        <div>{{ order[0].additional }}</div>
-        <div style="border-top: 1px dashed;">{{ order[0].psycological }}</div>
-    </div>
+<div v-if="isAdmin && !ajaxWaiting">
+    <h2>Пищевые ограничения для всех</h2>
+    <div>{{ food }}</div>
 </div>
 </template>
+

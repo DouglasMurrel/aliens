@@ -8,6 +8,7 @@
 
         <RouterLink to="/" class="me-1">{{ userData.fullname }}</RouterLink>
         <RouterLink v-if="isAdmin" to="/admin/all-orders" class="me-1">Все заявки</RouterLink>
+        <RouterLink v-if="isAdmin" to="/admin/food" class="me-1">Пищевые ограничения</RouterLink>
         <a v-if="loggedIn" href='' @click.prevent="logout">Выйти</a>
       </nav>
       <nav v-else-if="!ajaxWaiting">
