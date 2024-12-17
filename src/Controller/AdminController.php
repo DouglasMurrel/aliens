@@ -35,7 +35,7 @@ class AdminController extends AbstractController
     #[Route('/all-orders', name: 'all-orders', methods: ['POST','OPTIONS'])]
     public function allOrders(#[CurrentUser] ?User $user, Request $request): JsonResponse
     {
-        $orders = $this->entityManager->getRepository(Order::class)->findAll();
+        $orders = $this->entityManager->getRepository(Order::class)->findAllOrders();
         return $this->json($this->orderInfo->getOrdersInfo($orders));
     }
 }

@@ -12,6 +12,7 @@ export default {
         return {
            authToken: localStorage.getItem('authToken'),
            refreshToken: localStorage.getItem('refreshToken'),
+           orders: []
         }
     },
     mounted() {
@@ -25,7 +26,7 @@ export default {
             this.$store.commit('ajaxWaiting', true);
             axios.create().post(API_URL + '/admin/all-orders',{},axiosConfig).then(function (response) {
                 if(response.status === 200) {
-                    console.log(JSON.parse(response.data));
+                    component.orders = JSON.parse(response.data);
                     component.$store.commit('ajaxWaiting', false);
                 }
             }).catch(function (error) {
@@ -40,6 +41,6 @@ export default {
 </script>
 <template>
 <div v-if="isAdmin">
-aaaaaaaaaaaaaaa
+    <div v-for="(order,k) in orders">{{ order }}</div>
 </div>
 </template>

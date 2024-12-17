@@ -40,4 +40,15 @@ class OrderRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+    
+    public function findAllOrders()
+    {
+        return $this->createQueryBuilder('o')
+            ->select(['o','u.fullname'])
+            ->join('o.user','u')
+            ->orderBy('o.id', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 }
