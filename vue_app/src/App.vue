@@ -5,8 +5,6 @@
     </div>
     <div class="container">
       <nav v-if="loggedIn && !ajaxWaiting">
-{{ this.$route.name }}
-{{ userData.roles.includes("ROLE_ADMIN") }}
 
         <RouterLink to="/" class="me-1">{{ userData.fullname }}</RouterLink>
         <RouterLink v-if="isAdmin" to="/admin/all-orders" class="me-1">Все заявки</RouterLink>
