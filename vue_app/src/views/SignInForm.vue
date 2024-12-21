@@ -28,6 +28,7 @@
       </div>
     </div>
     <button type="submit" class="btn btn-success">Войти</button>
+    <RouterLink to="/recover" class="ms-2">Забыли пароль?</RouterLink>
     <div>
       или войдите с использованием сервисов<br>
       <a :href="vkLoginUrl">
