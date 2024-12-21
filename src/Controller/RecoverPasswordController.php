@@ -118,7 +118,6 @@ class RecoverPasswordController extends AbstractController
             return $this->json(['error'=> implode(',',$errors)], Response::HTTP_UNAUTHORIZED);
         }
         
-        $this->logger->info($email);
         try {
             $recoverEntity = $this->em->createQueryBuilder()
                 ->select('r')
@@ -135,6 +134,7 @@ class RecoverPasswordController extends AbstractController
             if (!$recoverEntity) {
                 return $this->json(['error'=>'Код недействителен'], Response::HTTP_UNAUTHORIZED);
             }
+            $this->em->remove($recoverEntity);
         } catch (\Exception $e) {
             return $this->json(['error'=>'Код не уникален'], Response::HTTP_UNAUTHORIZED);
         }
