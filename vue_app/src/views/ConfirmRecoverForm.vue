@@ -72,7 +72,7 @@
                 event.preventDefault();
 
                 if (this.password!==this.password1) {
-                    this.validationErrors = {'password': 'Passwords are not equal'};
+                    this.validationErrors = {'password': 'Пароли не совпадают'};
                     return;
                 }
 
