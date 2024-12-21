@@ -5,22 +5,36 @@
     </div>
 
     <form method="post" v-on:submit.prevent="submitForm" v-else>
-      <h2 v-if="ajaxWaiting">Loading, please wait...</h2>
+      <h2 v-if="ajaxWaiting">Идет загрузка. Подождите, пожалуйста...</h2>
       <small class="form-text text-danger" v-if="validationErrors.hasOwnProperty('common') && validationErrors.common">
         {{ validationErrors.common }}
       </small>
       <div class="form-group">
         <label for="password">Пароль</label>
-        <input :type="showPass ? 'text' : 'password'" class="form-control" autocomplete="off" id="password" v-model="password" placeholder="Password">
-        <a v-html="showPass ? 'Спрятать пароль' : 'Показать пароль'" href="" @click.prevent="showPass=!showPass"></a>
+        <div class="input-group mb-2">
+            <input :type="showPass ? 'text' : 'password'" class="form-control" autocomplete="off" id="password" v-model="password">
+            <div class="input-group-prepend">
+                <div class="input-group-text" role="button" @click="showPass=!showPass">
+                    <font-awesome-icon v-if="showPass" icon="fa-solid fa-eye" />
+                    <font-awesome-icon v-else icon="fa-solid fa-eye-slash" />
+                </div>
+            </div>
+        </div>
         <small class="form-text text-danger" v-if="validationErrors.password">
           {{ validationErrors.password }}
         </small>
       </div>
       <div class="form-group">
         <label for="password1">Повторите пароль</label>
-        <input :type="showPass1 ? 'text' : 'password'" class="form-control" autocomplete="off" id="password1" v-model="password1" placeholder="Repeat password">
-        <a v-html="showPass1 ? 'Спрятать пароль' : 'Показать пароль'" href="" @click.prevent="showPass1=!showPass1"></a>
+        <div class="input-group mb-2">
+            <input :type="showPass1 ? 'text' : 'password'" class="form-control" autocomplete="off" id="password1" v-model="password1">
+            <div class="input-group-prepend">
+                <div class="input-group-text" role="button" @click.prevent="showPass1=!showPass1">
+                    <font-awesome-icon v-if="showPass1" icon="fa-solid fa-eye" />
+                    <font-awesome-icon v-else icon="fa-solid fa-eye-slash" />
+                </div>
+            </div>
+        </div>
       </div>
       <input type="hidden" v-model="email">
       <input type="hidden" v-model="code">

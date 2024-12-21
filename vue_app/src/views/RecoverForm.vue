@@ -9,8 +9,10 @@
     <h2 v-if="ajaxWaiting">Идет обработка, подождите, пожалуйста...</h2>
     <form method="post" v-on:submit.prevent="submitForm">
       <div class="form-group">
-        <label for="email">Email address</label>
-        <input type="email" class="form-control" id="email" v-model="email" aria-describedby="emailHelp" placeholder="Enter email">
+        <label for="email">Введите ваш email</label>
+        <div class="input-group mb-2">
+            <input type="email" class="form-control" id="email" v-model="email" aria-describedby="emailHelp">
+        </div>
         <small class="form-text text-danger" v-if="errorText">
           {{ errorText }}
         </small>
